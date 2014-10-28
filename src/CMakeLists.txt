@@ -7,5 +7,6 @@ target_link_libraries(demo ${Boost_LIBRARIES})
 target_link_libraries(demo glbinding)
 target_link_libraries(demo ${OPENGL_LIBRARIES})
 target_link_libraries(demo assimp)
+target_link_libraries(demo ${GLM_LIBRARIES})
 
 install(TARGETS demo RUNTIME DESTINATION ${BUILD_DIR})

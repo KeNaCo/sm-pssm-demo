@@ -43,5 +43,9 @@ include_directories(${glbinding_INCLUDE_DIR})
 find_package (assimp REQUIRED)
 include_directories(${assimp_INCLUDE_DIR})
 
+#Look up glm
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIR})
+
 # Look in src to build binaries
 add_subdirectory(src)
