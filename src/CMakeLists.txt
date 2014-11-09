@@ -1,6 +1,6 @@
 project(src)
 
-add_executable(demo main.cpp core.cpp renderer.cpp)
+add_executable(demo main.cpp core.cpp renderer.cpp shader.cpp)
 
 target_link_libraries(demo ${SDL2_LIBRARY})
 target_link_libraries(demo ${Boost_LIBRARIES})

@@ -53,7 +53,7 @@ Core_t::~Core_t() {
 }
 
 
-void Core_t::loadAssets(std::string& fileName) {
+void Core_t::loadAssets(std::string fileName) {
 	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate |
 											 aiProcess_JoinIdenticalVertices |
 											 aiProcess_SortByPType);

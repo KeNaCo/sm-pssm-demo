@@ -27,7 +27,7 @@ public:
 	Core_t();
 	virtual ~Core_t();
 
-	void loadAssets(std::string& fileName);
+	void loadAssets(std::string fileName);
 	void updateControls();
 	void renderLoop();
 };
