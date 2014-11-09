@@ -12,21 +12,27 @@
 #include <SDL_video.h>
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
+
 #include "shader.h"
+#include "mesh.h"
+#include "camera.h"
 
 class Renderer_t {
 private:
 	SDL_GLContext gl;
 	const aiScene* scene;
 	Shader* shader;
+	Camera* camera;
 
 	glm::mat4 projectionMatrix; // Store the projection matrix
 	glm::mat4 viewMatrix; // Store the view matrix
-	glm::mat4 modelMatrix; // Store the model matrix
+//	glm::mat4 modelMatrix; // Store the model matrix
 
-	unsigned int vaoID[1]; // Our Vertex Array Object
-	unsigned int vboID[3]; // Our Vertex Buffer Object
+	std::vector<Mesh*> meshes;
 
+	void loadMeshes();
+	void renderNode(aiNode* node, aiMatrix4x4);
+	void renderMesh(const unsigned int i, aiMatrix4x4 mMatrix);
 public:
 	unsigned int width;
 	unsigned int height;

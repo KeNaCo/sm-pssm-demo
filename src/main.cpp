@@ -18,6 +18,7 @@
 int main(/*int argc, char* argv[]*/)
 {
 	Core_t core;
+	core.loadAssets("../assets/test.blend");
 	core.renderLoop();
 	return 0;
 }
