@@ -25,7 +25,7 @@ private:
 	glm::mat4 modelMatrix; // Store the model matrix
 
 	unsigned int vaoID[1]; // Our Vertex Array Object
-	unsigned int vboID[2]; // Our Vertex Buffer Object
+	unsigned int vboID[3]; // Our Vertex Buffer Object
 
 public:
 	unsigned int width;

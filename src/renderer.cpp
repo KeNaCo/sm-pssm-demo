@@ -36,9 +36,14 @@ Renderer_t::Renderer_t(SDL_Window* window): scene(nullptr), width(800), height(6
 	float ratio = width/height;
     projectionMatrix = glm::perspective(60.0f, ratio, 0.1f, 100.f);  // Create our perspective projection matrix
 
+    int vertnum = 4 * 3; //6x
     //Create square
-    float* vertices = new float[18];  // Vertices for our square
-    float* colors = new float[18]; // Colors for our vertices
+    float* vertices = new float[vertnum];  // Vertices for our square
+    float* colors = new float[vertnum]; // Colors for our vertices
+    unsigned int* indices = new unsigned int[6];
+
+    indices[0] = 0; indices[1] = 1; indices[2] = 2;
+    indices[3] = 2; indices[4] = 3; indices[5] = 0;
 
     vertices[0] = -0.5; vertices[1] = -0.5; vertices[2] = 0.0; // Bottom left corner
     colors[0] = 1.0; colors[1] = 1.0; colors[2] = 1.0; // Bottom left corner
@@ -51,32 +56,38 @@ Renderer_t::Renderer_t(SDL_Window* window): scene(nullptr), width(800), height(6
 
     vertices[9] = 0.5; vertices[10] = -0.5; vertices[11] = 0.0; // Bottom right corner
     colors[9] = 0.0; colors[10] = 0.0; colors[11] = 1.0; // Bottom right corner
-
+/*
     vertices[12] = -0.5; vertices[13] = -0.5; vertices[14] = 0.0; // Bottom left corner
     colors[12] = 1.0; colors[13] = 1.0; colors[14] = 1.0; // Bottom left corner
 
     vertices[15] = 0.5; vertices[16] = 0.5; vertices[17] = 0.0; // Top Right corner
     colors[15] = 0.0; colors[16] = 1.0; colors[17] = 0.0; // Top Right corner
-
+*/
     glGenVertexArrays(1, &vaoID[0]); // Create our Vertex Array Object
     glBindVertexArray(vaoID[0]); // Bind our Vertex Array Object so we can use it
 
-    glGenBuffers(2, &vboID[0]); // Generate our Vertex Buffer Object
+    glGenBuffers(3, &vboID[0]); // Generate our Vertex Buffer Objects
 
     glBindBuffer(GL_ARRAY_BUFFER, vboID[0]); // Bind our Vertex Buffer Object
-    glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), vertices, GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
+    glBufferData(GL_ARRAY_BUFFER, vertnum * sizeof(GLfloat), vertices, GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
     glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set up our vertex attributes pointer
     glEnableVertexAttribArray(0); // Enable our Vertex Array Object
 
     glBindBuffer(GL_ARRAY_BUFFER, vboID[1]); // Bind our second Vertex Buffer Object
-    glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), colors, GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
+    glBufferData(GL_ARRAY_BUFFER, vertnum * sizeof(GLfloat), colors, GL_STATIC_DRAW); // Set the size and data of our VBO and set it to STATIC_DRAW
     glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set up our vertex attributes pointer
     glEnableVertexAttribArray(1); // Enable the second vertex attribute array
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID[2]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+//    glVertexAttribPointer((GLuint)2, 3, GL_INT, GL_FALSE, 0, 0);
+//    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0); // Disable our Vertex Buffer Object
 
     delete[] vertices; // Delete our vertices from memory
     delete[] colors; // Delete our vertices from memory
+    delete[] indices;
 
 	LOG(info) << "Renderer_t constructor done";
 }
@@ -118,8 +129,9 @@ void Renderer_t::render() {
 
 	glBindVertexArray(vaoID[0]); // Bind our Vertex Array Object
 
-	glDrawArrays(GL_TRIANGLES, 0, 6); // Draw our square
-
+//	glDrawArrays(GL_TRIANGLES, 0, 6); // Draw our square
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID[2]);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0); // Unbind our Vertex Array Object
 
 	shader->unbind(); // Unbind our shader
