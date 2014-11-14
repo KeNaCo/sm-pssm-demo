@@ -11,13 +11,13 @@
 #include <iostream>
 #include <string>
 
-#include "log.h"
-#include "core.h"
+#include "log.hpp"
+#include "core.hpp"
 
 
 int main(/*int argc, char* argv[]*/)
 {
-	Core_t core;
+	Core core;
 	core.loadAssets("../assets/test.blend");
 	core.renderLoop();
 	return 0;

@@ -13,20 +13,21 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "log.h"
-#include "core.h"
-#include "renderer.h"
-#include "exceptions.h"
+#include "log.hpp"
+#include "core.hpp"
+#include "renderer.hpp"
+#include "exceptions.hpp"
+#include "scene.hpp"
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
+Core::Core(): quit(false) {
+	LOG(info) << "Core::Core()";
 
-Core_t::Core_t(): quit(false) {
-	LOG(info) << "Core_t constructor";
-
-	int error;
-	error = SDL_Init(SDL_INIT_EVERYTHING); //TODO maybe change
+	int error = SDL_Init(SDL_INIT_EVERYTHING);
+	if (error < 0)
+		throw Exception(SDL_GetError());
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -35,36 +36,50 @@ Core_t::Core_t(): quit(false) {
 							  SDL_WINDOWPOS_UNDEFINED,
 							  WIDTH,
 							  HEIGHT,
-							  SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|\
+							  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | \
 							  SDL_WINDOW_RESIZABLE
 							  );
-	renderer = new Renderer_t(window);
+	renderer = new Renderer(window);
+	scene = nullptr;
 
-	LOG(info) << "Core_t constructor done";
+	LOG(info) << "Core::Core() done";
 }
 
 
-Core_t::~Core_t() {
-	LOG(info) << "Core_t destructor";
+Core::Core(std::string filename): Core() {
+	loadAssets(filename);
+}
+
+
+Core::~Core() {
+	LOG(info) << "Core::~Core()";
+
+	delete scene;
 	delete renderer;
+
 	SDL_DestroyWindow(window);
 
-	LOG(info) << "Core_t destructor done";
+	LOG(info) << "Core::~Core() done";
 }
 
 
-void Core_t::loadAssets(std::string fileName) {
-	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate |
+void Core::loadAssets(std::string fileName) {
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(fileName,
+											 aiProcess_Triangulate |
 											 aiProcess_JoinIdenticalVertices |
-											 aiProcess_SortByPType);
+											 aiProcess_SortByPType |
+											 aiProcess_PreTransformVertices);
 	if (!scene) {
 		throw LoadException(importer.GetErrorString());
 	}
-	renderer->setScene(scene);
+
+	this->scene = new Scene(scene);
+	renderer->setScene(this->scene);
 }
 
 
-void Core_t::updateControls() {
+void Core::updateControls() {
 	LOG(info) << "Core_t.updateControls()";
 
 	SDL_Event event;
@@ -77,22 +92,22 @@ void Core_t::updateControls() {
 	    	default:
 	    		break;
 	    	}
+	    } else {
+			switch(event.type) {
+			case SDL_QUIT:
+				quit = true;
+				break;
+			default:
+				break;
+			} //switch
 	    }
-
-		switch(event.type) {
-		case SDL_QUIT:
-			quit = true;
-			break;
-		default:
-			break;
-		} //switch
 	} //while
 
 	LOG(info) << "Core_t.updateControls() done";
 }
 
 
-void Core_t::renderLoop() {
+void Core::renderLoop() {
 	LOG(info) << "Core_t.renderLoop()";
 
 	while(!quit) {

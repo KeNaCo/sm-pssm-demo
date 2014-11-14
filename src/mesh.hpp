@@ -9,6 +9,7 @@
 #define SUBPROJECTS__SRC_MESH_H_
 
 #include <assimp/mesh.h>
+#include <glm/glm.hpp>
 
 enum MeshEntry {
 	VERTEX_BUFFER=0,
@@ -17,10 +18,12 @@ enum MeshEntry {
 
 class Mesh {
 	unsigned int numIndices;
-
-public:
 	unsigned int vao;
 	unsigned int vbo[2];
+
+public:
+	glm::mat4 modelMatrix; //TODO pravdepodobne nepotrebne,
+							//    assimp prerata vertexy na global
 
 	Mesh(const aiMesh* mesh);
 	virtual ~Mesh();

@@ -13,19 +13,26 @@
 #include <glbinding/gl/gl.h>
 #include <assimp/Importer.hpp>
 
-#include "renderer.h"
+#include "renderer.hpp"
 
-
-class Core_t {
+/*
+ * Controller class
+ */
+class Core {
 private:
-	SDL_Window* window;
-	Assimp::Importer importer;
-	Renderer_t* renderer;
 	bool quit;
 
+	//View classes
+	SDL_Window* window;
+	Renderer* renderer;
+
+	//Model class
+	Scene* scene;
+
 public:
-	Core_t();
-	virtual ~Core_t();
+	Core();
+	Core(std::string filename);
+	virtual ~Core();
 
 	void loadAssets(std::string fileName);
 	void updateControls();

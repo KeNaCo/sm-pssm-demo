@@ -5,7 +5,7 @@
  *      Author: kenaco
  */
 
-#include "shader.h"
+#include "shader.hpp"
 #include <cstring>
 #include <string>
 #include <fstream>

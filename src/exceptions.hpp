@@ -13,14 +13,20 @@
 
 using namespace std;
 
-
-class LoadException: public exception {
+class Exception: public exception {
+	const std::string name_ = "Exception";
 	std::string what_;
 public:
-	LoadException(std::string what): what_(what) {};
+	Exception(std::string what): what_(what) {};
 
 	const char * what () const throw () {
-		return what_.c_str();
+		return (name_ + ": " + what_).c_str();
 	};
 };
 #endif /* EXCEPTIONS_H_ */
+
+class LoadException: public Exception {
+	const std::string name_ = "LoadException";
+
+	using Exception::Exception;
+};

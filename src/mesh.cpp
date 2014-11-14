@@ -8,11 +8,15 @@
 #include <glbinding/gl/gl.h>
 #include <assimp/mesh.h>
 
-#include "log.h"
-#include "mesh.h"
+#include "log.hpp"
+#include "mesh.hpp"
 
 using namespace gl;
 
+
+/*
+ * Initialize Mesh, create vao and vbos
+ */
 Mesh::Mesh(const aiMesh* mesh) {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -66,6 +70,7 @@ Mesh::Mesh(const aiMesh* mesh) {
 	glBindVertexArray(0);
 }
 
+
 Mesh::~Mesh() {
 	glDeleteBuffers(1, &vbo[VERTEX_BUFFER]);
 	glDeleteBuffers(1, &vbo[INDEX_BUFFER]);
@@ -73,8 +78,15 @@ Mesh::~Mesh() {
 }
 
 
+/*
+ * Render current mesh
+ */
 void Mesh::render() {
+	LOG(info) << "Mesh::render()";
+
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
+
+	LOG(info) << "Mesh::render() done";
 }
