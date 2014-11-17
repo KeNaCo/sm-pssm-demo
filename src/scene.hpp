@@ -21,6 +21,7 @@ class Scene {
 public:
 	std::vector<Mesh*>meshes;
 	std::vector<Camera*>cameras;
+//	std::vector<Material*>materials;
 
 	Scene(const aiScene* scene);
 	virtual ~Scene();

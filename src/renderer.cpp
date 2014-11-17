@@ -38,9 +38,16 @@ Renderer::Renderer(SDL_Window* window) {
 	//Initialize scene rendering constants
 	glLoadIdentity(); // vycistime maticu
 	glClearColor(0.4f, 0.6f, 0.9f, 0.0f);
+	glEnable(GL_DEPTH_TEST); //TODO pozriet
+	glDepthFunc(GL_LESS); //TODO pozriet
 
 	//TODO samostatna fcia na nahravanie?
 	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
+
+	//TODO Tu su veci co sa testuju a potom sa presunu na spravne miesta
+	diffuseLight = glm::vec3(1.0, 1.0, 1.0);
+	ambientLight = glm::vec3(0.0, 0.0, 0.0);
+	lightPosition = glm::vec4(6.9, 2.5, 5.0, 0.0);
 
 	LOG(info) << "Renderer_t constructor done";
 }
@@ -85,6 +92,12 @@ void Renderer::render() {
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]); // Send our projection matrix to the shader
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]); // Send our view matrix to the shader
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]); // Send our model matrix to the shader
+
+	// setLight {
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, &diffuseLight[0]);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, &ambientLight[0]);
+	glLightfv(GL_LIGHT0, GL_POSITION, &lightPosition[0]);
+	// }
 
 	for (auto mesh: scene->meshes)
 		mesh->render();

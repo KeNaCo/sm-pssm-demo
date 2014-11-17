@@ -13,13 +13,14 @@
 
 enum MeshEntry {
 	VERTEX_BUFFER=0,
-	INDEX_BUFFER
+	INDEX_BUFFER,
+	NORMAL_BUFFER
 };
 
 class Mesh {
 	unsigned int numIndices;
 	unsigned int vao;
-	unsigned int vbo[2];
+	unsigned int vbo[3];
 
 public:
 	glm::mat4 modelMatrix; //TODO pravdepodobne nepotrebne,

@@ -26,9 +26,11 @@ private:
 
 	unsigned int activeCamera;
 
-//	void renderNode(aiNode* node, aiMatrix4x4); //TODO nepotrebne, assimp prepocita
-												//     suradnice do globalneho priestoru
-//	void renderMesh(const unsigned int i, aiMatrix4x4 mMatrix);
+	//TODO Tu su veci co sa testuju a potom sa presunu na spravne miesta
+	glm::vec3 diffuseLight;
+	glm::vec3 ambientLight;
+	glm::vec4 lightPosition;
+
 public:
 	unsigned int width;
 	unsigned int height;

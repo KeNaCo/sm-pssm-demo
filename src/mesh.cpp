@@ -24,7 +24,7 @@ Mesh::Mesh(const aiMesh* mesh) {
 	numIndices = mesh->mNumFaces * 3;
 
 	if(mesh->HasPositions()) {
-		int numVertItems = mesh->mNumVertices * 3;
+		unsigned int numVertItems = mesh->mNumVertices * 3;
 		float *vertices = new float[numVertItems];
 
 		for (unsigned int i=0; i < mesh->mNumVertices; i++) {
@@ -65,6 +65,30 @@ Mesh::Mesh(const aiMesh* mesh) {
 //		glEnableVertexAttribArray (3);
 
 		delete[] indices;
+	}
+
+	if (mesh->HasNormals()) {
+		unsigned int numNormalItems = mesh->mNumVertices * 3;
+		float* normals = new float[numNormalItems];
+
+		for (unsigned int i=0; i < mesh->mNumVertices; i++) {
+			normals[i * 3] = mesh->mNormals[i].x;
+			normals[i * 3 + 1] = mesh->mNormals[i].y;
+			normals[i * 3 + 2] = mesh->mNormals[i].z;
+
+			LOG(debug) << "Normal[" << mesh->mNormals[i].x << ", "
+									<< mesh->mNormals[i].y << ", "
+									<< mesh->mNormals[i].z << "]";
+		}
+
+		glGenBuffers(1, &vbo[NORMAL_BUFFER]);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo[NORMAL_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, 3 * mesh->mNumVertices * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray(2);
+
+		delete normals;
 	}
 
 	glBindVertexArray(0);
