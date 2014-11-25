@@ -21,10 +21,10 @@ class Mesh {
 	unsigned int numIndices;
 	unsigned int vao;
 	unsigned int vbo[3];
+	unsigned int materialIndex;
 
 public:
-	glm::mat4 modelMatrix; //TODO pravdepodobne nepotrebne,
-							//    assimp prerata vertexy na global
+	unsigned int material() { return materialIndex; };
 
 	Mesh(const aiMesh* mesh);
 	virtual ~Mesh();

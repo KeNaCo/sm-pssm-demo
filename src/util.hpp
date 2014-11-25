@@ -10,7 +10,9 @@
 
 #include <glm/glm.hpp>
 
-glm::mat4 toMat4_cast(aiMatrix4x4& matrix) {
+#include "log.hpp"
+
+inline glm::mat4 aiMatrix4x4ToMat4_cast(aiMatrix4x4& matrix) {
 	return glm::mat4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
 					 matrix.b1, matrix.b2, matrix.b3, matrix.b4,
 					 matrix.c1, matrix.c2, matrix.c3, matrix.c4,
@@ -18,8 +20,19 @@ glm::mat4 toMat4_cast(aiMatrix4x4& matrix) {
 }
 
 
-glm::vec3 toVec3_cast(aiVector3D& vector) {
+inline glm::vec3 aiVector3D_to_Vec3_cast(aiVector3D& vector) {
 	return glm::vec3(vector.x, vector.y, vector.z);
+}
+
+
+inline glm::vec4 aiColor4D_to_Vec4_cast(aiColor4D& color) {
+	return glm::vec4(color.r, color.g, color.b, color.a);
+}
+
+inline void aiColor3D_to_float_cast(float* color, const aiColor3D& aiColor) {
+	color[0] = aiColor.r;
+	color[1] = aiColor.g;
+	color[2] = aiColor.b;
 }
 
 #endif /* SUBPROJECTS__SRC_UTIL_HPP_ */

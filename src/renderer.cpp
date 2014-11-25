@@ -39,14 +39,16 @@ Renderer::Renderer(SDL_Window* window) {
 	glLoadIdentity(); // vycistime maticu
 	glClearColor(0.4f, 0.6f, 0.9f, 0.0f);
 	glEnable(GL_DEPTH_TEST); //TODO pozriet
+	glEnable(GL_LIGHT0);
 	glDepthFunc(GL_LESS); //TODO pozriet
 
 	//TODO samostatna fcia na nahravanie?
 	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
 
 	//TODO Tu su veci co sa testuju a potom sa presunu na spravne miesta
-	diffuseLight = glm::vec3(1.0, 1.0, 1.0);
-	ambientLight = glm::vec3(0.0, 0.0, 0.0);
+	diffuseLight = glm::vec3(0.5, 0.5, 0.5);
+	ambientLight = glm::vec3(0.2, 0.2, 0.2);
+	specularLight = glm::vec3(0.5, 0.5, 0.5);
 	lightPosition = glm::vec4(6.9, 2.5, 5.0, 0.0);
 
 	LOG(info) << "Renderer_t constructor done";
@@ -96,11 +98,14 @@ void Renderer::render() {
 	// setLight {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, &diffuseLight[0]);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, &ambientLight[0]);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, &specularLight[0]);
 	glLightfv(GL_LIGHT0, GL_POSITION, &lightPosition[0]);
 	// }
 
-	for (auto mesh: scene->meshes)
+	for (auto mesh: scene->meshes) {
+		scene->materials[mesh->material()]->apply();
 		mesh->render();
+	}
 
 	shader->unbind(); // Unbind our shader
 

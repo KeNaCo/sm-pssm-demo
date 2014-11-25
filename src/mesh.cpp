@@ -32,9 +32,9 @@ Mesh::Mesh(const aiMesh* mesh) {
 			vertices[i * 3 + 1] = mesh->mVertices[i].y;
 			vertices[i * 3 + 2] = mesh->mVertices[i].z;
 
-			LOG(debug) << "Vertex[" << mesh->mVertices[i].x << ", "
+/*			LOG(debug) << "Vertex[" << mesh->mVertices[i].x << ", "
 									<< mesh->mVertices[i].y << ", "
-									<< mesh->mVertices[i].z << "]";
+									<< mesh->mVertices[i].z << "]"; */
 		}
 
 		glGenBuffers(1, &vbo[VERTEX_BUFFER]);
@@ -76,9 +76,9 @@ Mesh::Mesh(const aiMesh* mesh) {
 			normals[i * 3 + 1] = mesh->mNormals[i].y;
 			normals[i * 3 + 2] = mesh->mNormals[i].z;
 
-			LOG(debug) << "Normal[" << mesh->mNormals[i].x << ", "
+/*			LOG(debug) << "Normal[" << mesh->mNormals[i].x << ", "
 									<< mesh->mNormals[i].y << ", "
-									<< mesh->mNormals[i].z << "]";
+									<< mesh->mNormals[i].z << "]"; */
 		}
 
 		glGenBuffers(1, &vbo[NORMAL_BUFFER]);
@@ -92,6 +92,8 @@ Mesh::Mesh(const aiMesh* mesh) {
 	}
 
 	glBindVertexArray(0);
+
+	materialIndex = mesh->mMaterialIndex;
 }
 
 

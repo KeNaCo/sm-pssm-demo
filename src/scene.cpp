@@ -18,6 +18,10 @@ Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumCameras; i++) {
 		cameras.push_back(new Camera(scene->mCameras[i]));
 	}
+
+	for (unsigned int i=0; i < scene->mNumMaterials; i++) {
+		materials.push_back(new Material(scene->mMaterials[i]));
+	}
 }
 
 Scene::~Scene() {

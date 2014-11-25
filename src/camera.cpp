@@ -23,16 +23,16 @@
 Camera::Camera(aiCamera* camera) {
 	LOG(info) << "Camera::Camera()";
 
-	position = toVec3_cast(camera->mPosition);
+	position = aiVector3D_to_Vec3_cast(camera->mPosition);
 	LOG(debug) << "Camera.position [" << position.x << ", "
 									  << position.y << ", "
 									  << position.z << "]";
 
-	lookAt = toVec3_cast(camera->mLookAt);
+	lookAt = aiVector3D_to_Vec3_cast(camera->mLookAt);
 	LOG(debug) << "Camera.lookAt [" << lookAt.x << ", "
 									<< lookAt.y << ", "
 									<< lookAt.z << "]";
-	up = toVec3_cast(camera->mUp);
+	up = aiVector3D_to_Vec3_cast(camera->mUp);
 	LOG(debug) << "Camera.up [" << up.x << ", "
 								<< up.y << ", "
 								<< up.z << "]";

@@ -29,6 +29,7 @@ private:
 	//TODO Tu su veci co sa testuju a potom sa presunu na spravne miesta
 	glm::vec3 diffuseLight;
 	glm::vec3 ambientLight;
+	glm::vec3 specularLight;
 	glm::vec4 lightPosition;
 
 public:
