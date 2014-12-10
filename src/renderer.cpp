@@ -71,6 +71,11 @@ void Renderer::setScene(Scene* scene) {
 }
 
 
+Camera* Renderer::getActiveCamera() {
+	return scene->cameras[activeCamera];
+}
+
+
 void Renderer::updateProjectionMatrix() {
 	projectionMatrix = scene->cameras[activeCamera]->projectionMatrix(width, height);
 }

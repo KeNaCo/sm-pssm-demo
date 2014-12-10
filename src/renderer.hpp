@@ -40,7 +40,8 @@ public:
 	virtual ~Renderer();
 
 	void setScene(Scene* scene);
-	void updateProjectionMatrix();
+	Camera* getActiveCamera();
+	void updateProjectionMatrix(); //TODO nwm ci to treba
 	void render();
 };
 

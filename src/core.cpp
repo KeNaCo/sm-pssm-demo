@@ -82,25 +82,37 @@ void Core::loadAssets(std::string fileName) {
 void Core::updateControls() {
 	LOG(info) << "Core_t.updateControls()";
 
+	Camera* camera = renderer->getActiveCamera();
+
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
-	    if (event.type == SDL_WINDOWEVENT) {
-	    	switch (event.window.event) {
-	    	case SDL_WINDOWEVENT_CLOSE:
-	    		quit = true;
-	    		break;
-	    	default:
-	    		break;
-	    	}
-	    } else {
-			switch(event.type) {
-			case SDL_QUIT:
-				quit = true;
+		switch (event.type) {
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.sym) {
+			case SDLK_a:
+//				camera->moveX(false);
 				break;
+			case SDLK_d:
+//				camera->moveX(true);
+				break;
+			case SDLK_w:
+				camera->moveForward();
+				break;
+			case SDLK_s:
+				camera->moveY(false);
 			default:
 				break;
-			} //switch
-	    }
+			}
+			break;
+	    case SDL_WINDOWEVENT_CLOSE:
+    		quit = true;
+    		break;
+		case SDL_QUIT:
+			quit = true;
+			break;
+		default:
+			break;
+		} //switch
 	} //while
 
 	LOG(info) << "Core_t.updateControls() done";

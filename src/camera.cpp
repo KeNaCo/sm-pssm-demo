@@ -61,3 +61,23 @@ glm::mat4 Camera::viewMatrix() {
 glm::mat4 Camera::projectionMatrix(float width, float height) {
 	return glm::perspective(fov, width/height, near, far);
 }
+
+
+void Camera::moveForward() {
+	glm::vec3 positionNew = glm::normalize(lookAt - position) * 0.02f;
+	LOG(debug) << "Position: [" << position.x << ", "
+								<< position.y << ", "
+								<< position.z << "]->["
+								<< positionNew.x << ", "
+								<< positionNew.y << ", "
+								<< positionNew.z << "]";
+	position += positionNew;
+}
+
+
+void Camera::moveY(bool right) {
+	if (right)
+		position.y += 0.5;
+	else
+		position.y -= 0.5;
+}

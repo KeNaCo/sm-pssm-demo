@@ -67,11 +67,6 @@ Material::~Material() {}
 void Material::apply() {
 	LOG(info) << "Material::apply()";
 
-/*	float shineses[] = {50};
-	float diffuse[] = {1.0, 0.0, 0.0};
-	float ambient[] = {0.0, 0.0, 0.0};
-	float specular[] = {1.0, 1.0, 1.0};*/
-
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
