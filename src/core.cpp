@@ -115,6 +115,8 @@ void Core::loadAssets(std::string fileName) {
 	}
 
 	this->scene = new Scene(scene);
+	if (this->scene == nullptr)
+		throw Exception("Fail to create instance of Scene.");
 	renderer->setScene(this->scene);
 //	handler = new CameraHandler(renderer->getActiveCamera());
 }

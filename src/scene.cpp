@@ -9,6 +9,7 @@
 
 #include "log.hpp"
 #include "scene.hpp"
+#include "exceptions.hpp"
 
 Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumMeshes; i++) {
@@ -18,6 +19,8 @@ Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumCameras; i++) {
 		cameras.push_back(new Camera(scene->mCameras[i]));
 	}
+	if (cameras.size() <= 0)
+		throw Exception("Missing any camera!");
 
 	for (unsigned int i=0; i < scene->mNumMaterials; i++) {
 		materials.push_back(new Material(scene->mMaterials[i]));
