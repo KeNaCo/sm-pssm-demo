@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <iomanip> // setprecision
 #include <SDL.h>
 #include <SDL_events.h>
 #include <SDL_video.h>
@@ -18,11 +19,50 @@
 #include "renderer.hpp"
 #include "exceptions.hpp"
 #include "scene.hpp"
+#include "handler.hpp"
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-Core::Core(): quit(false) {
+
+void Core::updateDelta() {
+	actTime = SDL_GetTicks();
+	delta = actTime - lastTime;
+	lastTime = actTime;
+}
+
+
+void Core::updateControls() {
+	LOG(info) << "Core_t.updateControls()";
+
+	Camera* camera = renderer->getActiveCamera();
+	//TODO inicializovat v konstruktore, priradit kameru, tu uz len volat handler
+
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		switch (event.type) {
+	    case SDL_WINDOWEVENT_CLOSE:
+    		quit = true;
+    		break;
+		case SDL_QUIT:
+			quit = true;
+			break;
+		default:
+			break;
+		} //switch
+	} //while
+
+	LOG(info) << "Core_t.updateControls() done";
+}
+
+
+void Core::updateFpsLog() {
+	float fps = 1000.0 / delta;
+	LOG(debug) << "FPS: " << setprecision(3) << fps;
+}
+
+
+Core::Core(): quit(false), actTime(0), lastTime(0), delta(0) {
 	LOG(info) << "Core::Core()";
 
 	int error = SDL_Init(SDL_INIT_EVERYTHING);
@@ -76,46 +116,7 @@ void Core::loadAssets(std::string fileName) {
 
 	this->scene = new Scene(scene);
 	renderer->setScene(this->scene);
-}
-
-
-void Core::updateControls() {
-	LOG(info) << "Core_t.updateControls()";
-
-	Camera* camera = renderer->getActiveCamera();
-
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch (event.type) {
-		case SDL_KEYDOWN:
-			switch (event.key.keysym.sym) {
-			case SDLK_a:
-//				camera->moveX(false);
-				break;
-			case SDLK_d:
-//				camera->moveX(true);
-				break;
-			case SDLK_w:
-				camera->moveForward();
-				break;
-			case SDLK_s:
-				camera->moveY(false);
-			default:
-				break;
-			}
-			break;
-	    case SDL_WINDOWEVENT_CLOSE:
-    		quit = true;
-    		break;
-		case SDL_QUIT:
-			quit = true;
-			break;
-		default:
-			break;
-		} //switch
-	} //while
-
-	LOG(info) << "Core_t.updateControls() done";
+	handler = new CameraHandler(*(renderer->getActiveCamera()));
 }
 
 
@@ -123,6 +124,8 @@ void Core::renderLoop() {
 	LOG(info) << "Core_t.renderLoop()";
 
 	while(!quit) {
+		updateDelta();
+		updateFpsLog();
 		updateControls();
 
 		renderer->render();

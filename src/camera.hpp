@@ -13,14 +13,15 @@
 #include <string>
 
 class Camera {
-	glm::vec3 position;
-	glm::vec3 lookAt;
-	glm::vec3 up;
 	float near;
 	float far;
 	float fov;
 
 public:
+	glm::vec3 position;
+	glm::vec3 lookAt;
+	glm::vec3 up;
+
 	std::string name;
 
 	Camera(aiCamera* camera);

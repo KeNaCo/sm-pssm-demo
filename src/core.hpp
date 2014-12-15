@@ -14,6 +14,7 @@
 #include <assimp/Importer.hpp>
 
 #include "renderer.hpp"
+#include "handler.hpp"
 
 /*
  * Controller class
@@ -22,6 +23,14 @@ class Core {
 private:
 	bool quit;
 
+	// Timing
+	int actTime;
+	int lastTime;
+	int delta;
+
+	//Controls
+	EventHandler* handler;
+
 	//View classes
 	SDL_Window* window;
 	Renderer* renderer;
@@ -29,13 +38,16 @@ private:
 	//Model class
 	Scene* scene;
 
+
+	void updateDelta();
+	void updateControls();
+	void updateFpsLog();
 public:
 	Core();
 	Core(std::string filename);
 	virtual ~Core();
 
 	void loadAssets(std::string fileName);
-	void updateControls();
 	void renderLoop();
 };
 
