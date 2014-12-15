@@ -27,8 +27,8 @@ class CameraHandler: public EventHandler {
 	void move_forward(int deltaT, int v);
 	void move_backward(int deltaT, int v);
 public:
-	CameraHandler(Camera *camera): camera(camera) {};
-	virtual ~CameraHandler() {};
+	CameraHandler(Camera *camera);
+	virtual ~CameraHandler();
 
 	virtual void operator()(SDL_Event event, int deltaT, int v);
 };

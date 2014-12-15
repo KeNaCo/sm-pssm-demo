@@ -62,7 +62,7 @@ void Core::updateFpsLog() {
 }
 
 
-Core::Core(): quit(false), actTime(0), lastTime(0), delta(0) {
+Core::Core(): quit(false), actTime(0), lastTime(0), delta(0), handler(nullptr) {
 	LOG(info) << "Core::Core()";
 
 	int error = SDL_Init(SDL_INIT_EVERYTHING);
@@ -116,7 +116,7 @@ void Core::loadAssets(std::string fileName) {
 
 	this->scene = new Scene(scene);
 	renderer->setScene(this->scene);
-	handler = new CameraHandler(*(renderer->getActiveCamera()));
+//	handler = new CameraHandler(renderer->getActiveCamera());
 }
 
 

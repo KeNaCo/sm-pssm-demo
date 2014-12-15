@@ -17,7 +17,7 @@
  * @param v: rychlost pohybu [m/s]
  */
 void CameraHandler::move_forward(int deltaT, int v) {
-	camera->position += glm::normalize(camera->lookAt) * (deltaT / 1000 * v);
+//	camera->position += glm::normalize(camera->lookAt) * (deltaT / 1000 * v);
 	LOG(debug) << "Camera.position[" << camera->position.x << ", "
 									 << camera->position.y << ", "
 									 << camera->position.z << "]";
@@ -25,14 +25,18 @@ void CameraHandler::move_forward(int deltaT, int v) {
 
 
 void CameraHandler::move_backward(int deltaT, int v) {
-	camera->position -= glm::normalize(camera->lookAt) * (deltaT / 1000 * v);
+//	camera->position -= glm::normalize(camera->lookAt) * (deltaT / 1000 * v);
 	LOG(debug) << "Camera.position[" << camera->position.x << ", "
 									 << camera->position.y << ", "
 									 << camera->position.z << "]";
 }
 
 
-virtual void CameraHandler::operator()(SDL_Event event, int deltaT, int v) {
+CameraHandler::CameraHandler(Camera *camera): camera(camera) {}
+CameraHandler::~CameraHandler() {}
+
+
+void CameraHandler::operator()(SDL_Event event, int deltaT, int v) {
 	switch(event.type) {
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
