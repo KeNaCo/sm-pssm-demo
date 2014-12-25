@@ -88,7 +88,8 @@ void Renderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // Clear required buffers
 
 	glm::mat4 viewMatrix = scene->cameras[activeCamera]->viewMatrix();
-	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+	glm::mat4 modelMatrix = getActiveCamera()->modelMatrix();
+//	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 
 	shader->bind(); // Bind our shader
 

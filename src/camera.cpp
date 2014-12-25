@@ -23,6 +23,7 @@
 Camera::Camera(aiCamera* camera) {
 	LOG(info) << "Camera::Camera()";
 
+	modelMatrix_ = glm::mat4(1.0f);
 	position = aiVector3D_to_Vec3_cast(camera->mPosition);
 	LOG(debug) << "Camera.position [" << position.x << ", "
 									  << position.y << ", "
@@ -58,6 +59,22 @@ glm::mat4 Camera::viewMatrix() {
 	return glm::lookAt(position, lookAt, up);
 }
 
+
 glm::mat4 Camera::projectionMatrix(float width, float height) {
 	return glm::perspective(fov, width/height, near, far);
+}
+
+
+glm::mat4 Camera::modelMatrix() {
+	return modelMatrix_;
+}
+
+
+void Camera::translate(glm::vec3 vec) {
+	modelMatrix_ = glm::translate(modelMatrix_, vec);
+}
+
+
+void Camera::rotate(float angle, glm::vec3 axis) {
+	//TODO
 }

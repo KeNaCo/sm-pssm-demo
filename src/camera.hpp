@@ -17,6 +17,8 @@ class Camera {
 	float far;
 	float fov;
 
+	glm::mat4 modelMatrix_;
+
 public:
 	glm::vec3 position;
 	glm::vec3 lookAt;
@@ -28,6 +30,11 @@ public:
 	virtual ~Camera();
 	glm::mat4 viewMatrix();
 	glm::mat4 projectionMatrix(float width, float height);
+	glm::mat4 modelMatrix();
+
+	void translate(glm::vec3 vec);
+	void rotate(float angle, glm::vec3 axis);
 };
 
 #endif /* SUBPROJECTS__SRC_CAMERA_H_ */
+

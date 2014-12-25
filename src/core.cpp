@@ -35,12 +35,29 @@ void Core::updateDelta() {
 void Core::updateControls() {
 	LOG(info) << "Core_t.updateControls()";
 
-	Camera* camera = renderer->getActiveCamera();
-	//TODO inicializovat v konstruktore, priradit kameru, tu uz len volat handler
-
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		switch (event.type) {
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.sym) {
+			case SDLK_a:
+				handler->move_left(delta, 1, renderer->getActiveCamera());
+				break;
+			case SDLK_d:
+				handler->move_right(delta, 1, renderer->getActiveCamera());
+				break;
+			case SDLK_w:
+				LOG(debug) << "W";
+				handler->move_forward(delta, 1, renderer->getActiveCamera());
+				break;
+			case SDLK_s:
+				LOG(debug) << "S";
+				handler->move_backward(delta, 1, renderer->getActiveCamera());
+				break;
+			default:
+				break;
+			};
+			break;
 	    case SDL_WINDOWEVENT_CLOSE:
     		quit = true;
     		break;
@@ -81,6 +98,8 @@ Core::Core(): quit(false), actTime(0), lastTime(0), delta(0), handler(nullptr) {
 							  );
 	renderer = new Renderer(window);
 	scene = nullptr;
+	handler = new CameraHandler();
+	v = 1;
 
 	LOG(info) << "Core::Core() done";
 }
@@ -118,7 +137,6 @@ void Core::loadAssets(std::string fileName) {
 	if (this->scene == nullptr)
 		throw Exception("Fail to create instance of Scene.");
 	renderer->setScene(this->scene);
-//	handler = new CameraHandler(renderer->getActiveCamera());
 }
 
 

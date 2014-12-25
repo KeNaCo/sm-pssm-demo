@@ -11,26 +11,16 @@
 #include <SDL_events.h>
 #include "camera.hpp"
 
-class EventHandler {
+class CameraHandler {
+
 public:
-	virtual ~EventHandler() {};
-	virtual void operator()(SDL_Event event, int deltaT, int v)=0;
-};
+	CameraHandler();
+	~CameraHandler();
 
-class BaseHandler {
-	//zakladne veci, vypinanie okna etc..
-};
-
-class CameraHandler: public EventHandler {
-	Camera *camera;
-
-	void move_forward(int deltaT, int v);
-	void move_backward(int deltaT, int v);
-public:
-	CameraHandler(Camera *camera);
-	virtual ~CameraHandler();
-
-	virtual void operator()(SDL_Event event, int deltaT, int v);
+	void move_forward(int deltaT, float v, Camera* camera);
+	void move_backward(int deltaT, float v, Camera* camera);
+	void move_left(int deltaT, float v, Camera* camera);
+	void move_right(int deltaT, float v, Camera* camera);
 };
 
 #endif /* SUBPROJECTS__SRC_HANDLER_HPP_ */

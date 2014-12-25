@@ -29,7 +29,8 @@ private:
 	int delta;
 
 	//Controls
-	EventHandler* handler;
+	float v;
+	CameraHandler* handler;
 
 	//View classes
 	SDL_Window* window;
