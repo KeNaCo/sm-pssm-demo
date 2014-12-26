@@ -54,9 +54,15 @@ void Core::updateControls() {
 				LOG(debug) << "S";
 				handler->move_backward(delta, 1, renderer->getActiveCamera());
 				break;
-			default:
+			case SDLK_q:
+				if (event.key.keysym.mod & (KMOD_LCTRL | KMOD_RCTRL))
+					quit = true;
 				break;
-			};
+			}
+			break;
+		case SDL_MOUSEMOTION:
+			LOG(debug) << "xrel: " << event.motion.xrel
+					   << "yrel: " << event.motion.yrel;
 			break;
 	    case SDL_WINDOWEVENT_CLOSE:
     		quit = true;
