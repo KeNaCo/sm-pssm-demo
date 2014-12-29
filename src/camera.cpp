@@ -76,5 +76,9 @@ void Camera::translate(glm::vec3 vec) {
 
 
 void Camera::rotate(float angle, glm::vec3 axis) {
-	//TODO
+	LOG(info) << "Camera::rotate()";
+	translate(position);
+	modelMatrix_ = glm::rotate(modelMatrix_, angle, axis);
+	translate(-position);
+	LOG(info) << "Camera::rotate() done";
 }

@@ -12,6 +12,11 @@
 #include "handler.hpp"
 #include "camera.hpp"
 
+
+CameraHandler::CameraHandler() {}
+CameraHandler::~CameraHandler() {}
+
+
 /**
  * Fcia vyrata novu poziciu kamery pri pohybe dopredu v case deltaT
  *
@@ -52,5 +57,15 @@ void CameraHandler::move_right(int deltaT, float v, Camera* camera) {
 	glm::vec3 vector = (-vSize) * glm::normalize(left);
 	camera->translate(vector);
 }
-CameraHandler::CameraHandler() {}
-CameraHandler::~CameraHandler() {}
+
+
+void CameraHandler::mouse_move(int xrel, int yrel, Camera* camera) {
+	const float PI = 3.141592654;
+	float speed = 360;
+
+	if (xrel != 0) {
+		float angle = xrel * 2*PI / speed;
+		LOG(debug) << "Angle: " << angle;
+		camera->rotate(angle, glm::vec3(0.f, 1.f, 0.f));
+	}
+}

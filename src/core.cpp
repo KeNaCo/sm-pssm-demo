@@ -61,6 +61,7 @@ void Core::updateControls() {
 			}
 			break;
 		case SDL_MOUSEMOTION:
+			handler->mouse_move(event.motion.xrel, event.motion.yrel, renderer->getActiveCamera());
 			LOG(debug) << "xrel: " << event.motion.xrel
 					   << "yrel: " << event.motion.yrel;
 			break;

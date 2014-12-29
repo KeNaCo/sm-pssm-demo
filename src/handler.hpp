@@ -21,6 +21,8 @@ public:
 	void move_backward(int deltaT, float v, Camera* camera);
 	void move_left(int deltaT, float v, Camera* camera);
 	void move_right(int deltaT, float v, Camera* camera);
+
+	void mouse_move(int xrel, int yrel, Camera* camera);
 };
 
 #endif /* SUBPROJECTS__SRC_HANDLER_HPP_ */
