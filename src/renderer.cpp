@@ -23,40 +23,29 @@
 using namespace gl;
 
 
-Renderer::Renderer(SDL_Window* window) {
-	LOG(info) << "Renderer_t constructor";
-
+/**
+ * Inicializacia standardneho rendereru
+ */
+Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fragShader, unsigned int width=800, unsigned int height=600):
+		scene(nullptr), activeCamera(0), width(width), height(height) {
 	gl = SDL_GL_CreateContext(window);
-
 	glbinding::Binding::initialize();
 
-	scene = nullptr;
-	width = 800; //TODO prepracovat na automaticky update
-	height = 600;
-	activeCamera = 0;
-
-	//Initialize scene rendering constants
-	glLoadIdentity(); // vycistime maticu
+	// Initialize scene rendering constants
+	glLoadIdentity(); //cleaning matrix
 	glClearColor(0.4f, 0.6f, 0.9f, 0.0f);
-	glEnable(GL_DEPTH_TEST); //TODO pozriet
-	glEnable(GL_LIGHT0);
-	glDepthFunc(GL_LESS); //TODO pozriet
+	glEnable(GL_DEPTH_TEST);
 
-	//TODO samostatna fcia na nahravanie?
-	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
+	//Create and initialize shader program
+	shader = new Shader(vertexShader, fragShader);
 
-	//TODO Tu su veci co sa testuju a potom sa presunu na spravne miesta
-	diffuseLight = glm::vec3(0.5, 0.5, 0.5);
-	ambientLight = glm::vec3(0.2, 0.2, 0.2);
-	specularLight = glm::vec3(0.5, 0.5, 0.5);
-	lightPosition = glm::vec4(6.9, 2.5, 5.0, 0.0);
-
-	LOG(info) << "Renderer_t constructor done";
+	LOG(info) << "Renderer() done";
 }
 
 Renderer::~Renderer() {
 	LOG(info) << "Renderer::~Renderer()";
 
+	// posobilo problemy, bolo zakomentovane TODO este otestovat
 //	scene = nullptr; //zrusime ukazatel, constroler nasledne uvolni scenu
 	delete shader;
 	SDL_GL_DeleteContext(gl);
@@ -64,18 +53,22 @@ Renderer::~Renderer() {
 	LOG(info) << "Renderer::~Renderer() done";
 }
 
-
+//TODO sucast konstruktoru?
 void Renderer::setScene(Scene* scene) {
 	this->scene = scene;
 	updateProjectionMatrix();
 }
 
-
+/**
+ * Metoda vracia objekt aktivnej kamery TODO implementovat prepinanie kamier?
+ */
 Camera* Renderer::getActiveCamera() {
 	return scene->cameras[activeCamera];
 }
 
-
+/**
+ * Upravuje projectionMatrix pri zmene rozmerov okna
+ */
 void Renderer::updateProjectionMatrix() {
 	projectionMatrix = scene->cameras[activeCamera]->projectionMatrix(width, height);
 }
@@ -88,7 +81,7 @@ void Renderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // Clear required buffers
 
 	glm::mat4 viewMatrix = scene->cameras[activeCamera]->viewMatrix();
-	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f)); // TODO prerobit/odstranit
 
 	shader->bind(); // Bind our shader
 
@@ -101,6 +94,10 @@ void Renderer::render() {
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]); // Send our model matrix to the shader
 
 	// setLight {
+	glm::vec3 diffuseLight = glm::vec3(0.5, 0.5, 0.5);
+	glm::vec3 ambientLight = glm::vec3(0.2, 0.2, 0.2);
+	glm::vec3 specularLight = glm::vec3(0.5, 0.5, 0.5);
+	glm::vec4 lightPosition = glm::vec4(6.9, 2.5, 5.0, 0.0);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, &diffuseLight[0]);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, &ambientLight[0]);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, &specularLight[0]);
@@ -116,3 +113,13 @@ void Renderer::render() {
 
 	LOG(info) << "Renderer_t.render() done";
 }
+
+
+ShadowMapRenderer::ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height):
+		Renderer(window, "../assets/shader.vert", "../assets/shader.frag", width, height) {}
+
+
+ShadowMapRenderer::~ShadowMapRenderer() {}
+
+
+void ShadowMapRenderer::render() { Renderer::render(); }

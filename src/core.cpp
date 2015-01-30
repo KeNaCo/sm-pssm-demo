@@ -79,7 +79,8 @@ Core::Core(): quit(false), actTime(0), lastTime(0), delta(0), handler(nullptr) {
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | \
 							  SDL_WINDOW_RESIZABLE
 							  );
-	renderer = new Renderer(window);
+//	renderer = new Renderer(window, "../assets/shader.vert", "../assets/shader.frag", WIDTH, HEIGHT);
+	renderer = new ShadowMapRenderer(window, WIDTH, HEIGHT);
 	scene = nullptr;
 
 	LOG(info) << "Core::Core() done";
