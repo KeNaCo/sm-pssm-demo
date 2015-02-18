@@ -77,7 +77,7 @@ void Renderer::updateProjectionMatrix() {
 void Renderer::render() {
 	LOG(info) << "Renderer_t.render()";
 
-	glViewport(0, 0, width, height); // Set the viewport size to fill the window
+//	glViewport(0, 0, width, height); // Set the viewport size to fill the window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // Clear required buffers
 
 	glm::mat4 viewMatrix = scene->cameras[activeCamera]->viewMatrix();
@@ -115,6 +115,17 @@ void Renderer::render() {
 }
 
 
+void ShadowMapRenderer::setRenderTarget(Target target) {
+	if (target == Target::WINDOW) {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); //TODO ta 0 sa mi celkom nepaci
+		glViewport(0, 0, width, height); //TODO ok, toto si myslim ze tu ani nemusi byt, kedze to trieskame v render()
+	} else if (target == Target::TEXTURE) {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowMap.frameBuffer()); //TODO ta 0 sa mi celkom nepaci
+		glViewport(0, 0, shadowMap.width(), shadowMap.height()); //TODO ok, toto si myslim ze tu ani nemusi byt, kedze to trieskame v render()
+	}
+}
+
+
 ShadowMapRenderer::ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height):
 		Renderer(window, "../assets/shader.vert", "../assets/shader.frag", width, height) {}
 
@@ -122,4 +133,7 @@ ShadowMapRenderer::ShadowMapRenderer(SDL_Window* window, unsigned int width, uns
 ShadowMapRenderer::~ShadowMapRenderer() {}
 
 
-void ShadowMapRenderer::render() { Renderer::render(); }
+void ShadowMapRenderer::render() {
+	setRenderTarget(Target::WINDOW);
+	Renderer::render();
+}

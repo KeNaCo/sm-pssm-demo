@@ -15,7 +15,9 @@
 
 #include "shader.hpp"
 #include "scene.hpp"
+#include "texture.hpp"
 
+enum class Target { WINDOW, TEXTURE };
 
 /**
  * Trieda implementuje zakladne vykreslenie sceny,
@@ -55,6 +57,11 @@ public:
  * tienovych map.
  */
 class ShadowMapRenderer: public Renderer {
+private:
+	ShadowMap shadowMap;
+
+	void setRenderTarget(Target target);
+
 public:
 	ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height);
 	virtual ~ShadowMapRenderer();
