@@ -35,16 +35,16 @@ public:
 /**
  *
  */
-class ShadowMap: Texture {
+class ShadowMap: public Texture {
 private:
 	unsigned int frameBuffer_;
 
 public:
 	unsigned int frameBuffer() { return frameBuffer_; }
 
-	ShadowMap(GLenum textureTarget=GL_TEXTURE_2D, unsigned int width,
-				  unsigned int height, unsigned char* data,
-				  float filter=GL_LINEAR, GLenum attachment=GL_NONE);
+	ShadowMap(unsigned int width, unsigned int height, unsigned char* data,
+			GLenum textureTarget=GL_TEXTURE_2D, GLenum filter=GL_LINEAR,
+			GLenum attachment=GL_NONE);
 	virtual ~ShadowMap();
 };
 

@@ -22,15 +22,14 @@ Texture::~Texture() {
 	if (textureId) glDeleteTextures(1, &textureId);
 }
 
-ShadowMap::ShadowMap(GLenum textureTarget, unsigned int width,
-							 unsigned int height, unsigned char* data,
-							 float filter, GLenum attachment): Texture(textureTarget) {
+ShadowMap::ShadowMap(unsigned int width, unsigned int height, unsigned char* data,
+		GLenum textureTarget, GLenum filter, GLenum attachment): Texture(textureTarget) {
 	//init
 	if (width > 0 && height > 0 && data != nullptr) {
 		glBindTexture(textureTarget, textureId);
-		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-		glTexImage2D(textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); //TODO hlasi chybu ale ide
+		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, (float)filter);
+		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, (float)filter);
+		glTexImage2D(textureTarget, 0, static_cast<GLint>(GL_RGBA), width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); //TODO hlasi chybu ale ide
 	}
 
 	//init render target

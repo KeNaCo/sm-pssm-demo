@@ -18,6 +18,7 @@
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
+#include "texture.hpp"
 
 
 using namespace gl;
@@ -120,14 +121,16 @@ void ShadowMapRenderer::setRenderTarget(Target target) {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); //TODO ta 0 sa mi celkom nepaci
 		glViewport(0, 0, width, height); //TODO ok, toto si myslim ze tu ani nemusi byt, kedze to trieskame v render()
 	} else if (target == Target::TEXTURE) {
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowMap.frameBuffer()); //TODO ta 0 sa mi celkom nepaci
-		glViewport(0, 0, shadowMap.width(), shadowMap.height()); //TODO ok, toto si myslim ze tu ani nemusi byt, kedze to trieskame v render()
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowMap->frameBuffer()); //TODO ta 0 sa mi celkom nepaci
+		glViewport(0, 0, shadowMap->width(), shadowMap->height()); //TODO ok, toto si myslim ze tu ani nemusi byt, kedze to trieskame v render()
 	}
 }
 
 
 ShadowMapRenderer::ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height):
-		Renderer(window, "../assets/shader.vert", "../assets/shader.frag", width, height) {}
+		Renderer(window, "../assets/shader.vert", "../assets/shader.frag", width, height) {
+	shadowMap = new ShadowMap(width, height, NULL);
+}
 
 
 ShadowMapRenderer::~ShadowMapRenderer() {}

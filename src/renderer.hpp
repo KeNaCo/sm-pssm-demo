@@ -40,7 +40,6 @@ public:
 	unsigned int width;
 	unsigned int height;
 
-	Renderer(SDL_Window* window);
 	Renderer(SDL_Window* window, const char* vertexShader, const char* fragShader,
 			 unsigned int width, unsigned int height);
 	virtual ~Renderer();
@@ -58,7 +57,7 @@ public:
  */
 class ShadowMapRenderer: public Renderer {
 private:
-	ShadowMap shadowMap;
+	ShadowMap* shadowMap;
 
 	void setRenderTarget(Target target);
 
