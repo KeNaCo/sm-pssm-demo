@@ -129,7 +129,7 @@ void ShadowMapRenderer::setRenderTarget(Target target) {
 
 ShadowMapRenderer::ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height):
 		Renderer(window, "../assets/shader.vert", "../assets/shader.frag", width, height) {
-	shadowMap = new ShadowMap(width, height, NULL);
+	shadowMap = new ShadowMap(1024, 1024, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_COLOR_ATTACHMENT0, true);
 }
 
 

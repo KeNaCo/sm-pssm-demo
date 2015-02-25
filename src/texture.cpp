@@ -23,14 +23,25 @@ Texture::~Texture() {
 }
 
 ShadowMap::ShadowMap(unsigned int width, unsigned int height, unsigned char* data,
-		GLenum textureTarget, GLenum filter, GLenum attachment): Texture(textureTarget) {
+		GLenum textureTarget, GLenum filter, GLenum attachment, bool clamp): Texture(textureTarget) {
 	//init
-	if (width > 0 && height > 0 && data != nullptr) {
+ //	if (width > 0 && height > 0 && data != nullptr) {
 		glBindTexture(textureTarget, textureId);
 		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, (float)filter);
 		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, (float)filter);
-		glTexImage2D(textureTarget, 0, static_cast<GLint>(GL_RGBA), width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); //TODO hlasi chybu ale ide
-	}
+
+		if (clamp) {
+			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
+			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+		const GLenum internalFormat = GL_DEPTH_COMPONENT16;
+		const GLenum format = GL_DEPTH_COMPONENT;
+		glTexImage2D(textureTarget, 0, static_cast<GLint>(internalFormat), width, height, 0, format, GL_UNSIGNED_BYTE, data); //TODO hlasi chybu ale ide
+//	}
 
 	//init render target
 	GLenum drawBuffer;

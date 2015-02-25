@@ -44,7 +44,7 @@ public:
 
 	ShadowMap(unsigned int width, unsigned int height, unsigned char* data,
 			GLenum textureTarget=GL_TEXTURE_2D, GLenum filter=GL_LINEAR,
-			GLenum attachment=GL_NONE);
+			GLenum attachment=GL_NONE, bool clamp=false);
 	virtual ~ShadowMap();
 };
 
