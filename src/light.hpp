@@ -10,6 +10,7 @@
 
 #include <assimp/light.h>
 #include <glm/glm.hpp>
+#include <string>
 
 class ShadowInfo {
 
@@ -17,13 +18,16 @@ class ShadowInfo {
 
 class Light {
 	float intensity;
-	float diffuse[3];
-	float ambient[3];
-	float specular[3];
-
-	//TODO rozsirit o shadery?
+	glm::vec3 diffuse;
+	glm::vec3 ambient;
+	glm::vec3 specular;
 
 public:
+	glm::vec3 position;
+
+	std::string name;
+
+	//TODO rozsirit o shadery?
 
 	Light(const aiLight* light);
 	virtual ~Light();
