@@ -11,6 +11,7 @@
 #include <fstream>
 #include <glbinding/gl/gl.h>
 #include <glbinding/Binding.h>
+#include "log.hpp"
 
 using namespace gl;
 using namespace std; // Include the standard namespace
@@ -50,7 +51,7 @@ static void validateShader(GLuint shader, const char* file = 0) {
 
     glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer); // Ask OpenGL to give us the log associated with the shader
     if (length > 0) // If we have any information to display
-        cout << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl; // Output the information
+        LOG(error) << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl; // Output the information
 }
 
 /**
@@ -66,13 +67,13 @@ static void validateProgram(GLuint program) {
 
     glGetProgramInfoLog(program, BUFFER_SIZE, &length, buffer); // Ask OpenGL to give us the log associated with the program
     if (length > 0) // If we have any information to display
-        cout << "Program " << program << " link error: " << buffer << endl; // Output the information
+        LOG(error) << "Program " << program << " link error: " << buffer << endl; // Output the information
 
     glValidateProgram(program); // Get OpenGL to try validating the program
     GLboolean status;
     glGetProgramiv(program, GL_VALIDATE_STATUS, reinterpret_cast<int*>(&status)); // Find out if the shader program validated correctly
     if (status == GL_FALSE) // If there was a problem validating
-		cout << "Error validating shader " << program << endl; // Output which program had the error
+		LOG(error) << "Error validating shader " << program << endl; // Output which program had the error
 }
 
 /**
@@ -112,7 +113,7 @@ void Shader::init(const char *vsFile, const char *fsFile) {
 	const char *fragmentText = fsText.c_str();
 
     if (vertexText == NULL || fragmentText == NULL) { // If either the vertex or fragment shader wouldn't load
-        cout << "Either vertex shader or fragment shader file not found." << endl; // Output the error
+        LOG(error) << "Either vertex shader or fragment shader file not found." << endl; // Output the error
         return;
     }
 
