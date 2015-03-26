@@ -22,25 +22,26 @@ Texture::~Texture() {
 	if (textureId) glDeleteTextures(1, &textureId);
 }
 
-ShadowMap::ShadowMap(unsigned int width, unsigned int height, unsigned char* data,
+ShadowMap::ShadowMap(unsigned int width, unsigned int height,
 		GLenum textureTarget, GLenum filter, GLenum attachment, bool clamp): Texture(textureTarget) {
+	LOG(info) << "ShadowMap()";
 	//init
  //	if (width > 0 && height > 0 && data != nullptr) {
-		glBindTexture(textureTarget, textureId);
-		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, (float)filter);
-		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, (float)filter);
+	glBindTexture(textureTarget, textureId);
+	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, (float)filter);
+	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, (float)filter);
 
-		if (clamp) {
-			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
-			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
-		}
+	if (clamp) {
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
+		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
+	}
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-		const GLenum internalFormat = GL_DEPTH_COMPONENT16;
-		const GLenum format = GL_DEPTH_COMPONENT;
-		glTexImage2D(textureTarget, 0, static_cast<GLint>(internalFormat), width, height, 0, format, GL_UNSIGNED_BYTE, data); //TODO hlasi chybu ale ide
+	const GLenum internalFormat = GL_DEPTH_COMPONENT16;
+	const GLenum format = GL_DEPTH_COMPONENT;
+	glTexImage2D(textureTarget, 0, static_cast<GLint>(internalFormat), width, height, 0, format, GL_UNSIGNED_BYTE, NULL); //TODO hlasi chybu ale ide
 //	}
 
 	//init render target
@@ -68,7 +69,7 @@ ShadowMap::ShadowMap(unsigned int width, unsigned int height, unsigned char* dat
 		throw Exception("Fail to create Frame Buffer.");
 	}
 
-
+	LOG(info) << "ShadowMap() done";
 }
 
 

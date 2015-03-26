@@ -15,6 +15,9 @@
 class ShadowInfo {
 public:
 	glm::mat4 projectionMatrix;
+
+	ShadowInfo(glm::mat4 projection): projectionMatrix(projection) {};
+	~ShadowInfo() {};
 };
 
 

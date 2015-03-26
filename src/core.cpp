@@ -131,6 +131,7 @@ Core::~Core() {
 
 
 void Core::loadAssets(std::string fileName) {
+	LOG(info) << "Core.loadAssets()";
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName,
 											 aiProcess_Triangulate |
@@ -145,6 +146,7 @@ void Core::loadAssets(std::string fileName) {
 	if (this->scene == nullptr)
 		throw Exception("Fail to create instance of Scene.");
 	renderer->setScene(this->scene);
+	LOG(info) << "Core.loadAssets() done";
 }
 
 
