@@ -12,28 +12,34 @@
 #include <glm/glm.hpp>
 #include <string>
 
-class Camera {
-	float near;
-	float far;
-	float fov;
+#include "shader.hpp"
 
-	glm::mat4 modelMatrix_;
+
+class Camera {
+	float near_;
+	float far_;
+	float fov_;
+
+	glm::vec3 position_;
+	glm::vec3 lookAt_;
+	glm::vec3 up_;
+
+	std::string name_;
 
 public:
-	glm::vec3 position;
-	glm::vec3 lookAt;
-	glm::vec3 up;
+	glm::vec3 position() { return position_; }
+	glm::vec3 lookAt() { return lookAt_; }
+	glm::vec3 up() { return up_; }
 
-	std::string name;
-
-	Camera(aiCamera* camera);
-	virtual ~Camera();
 	glm::mat4 viewMatrix();
 	glm::mat4 projectionMatrix(float width, float height);
 	glm::mat4 modelMatrix();
+	glm::mat4 mvp(float width, float height);
 
-	void translate(glm::vec3 vec);
-	void rotate(float angle, glm::vec3 axis);
+	void set(Shader* shader, float width, float height);
+
+	Camera(aiCamera* camera);
+	virtual ~Camera();
 };
 
 #endif /* SUBPROJECTS__SRC_CAMERA_H_ */

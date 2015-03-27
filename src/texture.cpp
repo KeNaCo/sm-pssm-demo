@@ -6,6 +6,7 @@
  */
 
 #include <glbinding/gl/gl.h>
+#include <glm/glm.hpp>
 
 #include "log.hpp"
 #include "texture.hpp"
@@ -13,66 +14,71 @@
 
 using namespace gl;
 
-Texture::Texture(GLenum textureTarget): textureTarget(textureTarget), width_(0), height_(0) {
-	glGenTextures(1, &textureId);
+
+void ShadowMap::save() {
+	glm::dmat4 modelView = glm::dmat4(1.0);
+	glm::dmat4 projection = glm::dmat4(1.0);
+
+	//TODO BIAS
+
+	// Grab modelview and transformation matrices
+	glGetDoublev(GL_MODELVIEW_MATRIX, &modelView[0][0]);
+	glGetDoublev(GL_PROJECTION_MATRIX, &projection[0][0]);
+
+
+	glMatrixMode(GL_TEXTURE);
+	glActiveTexture(GL_TEXTURE7);
+
+	glLoadIdentity();
+//	glLoadMatrixd(bias);
+
+	// concatating all matrice into one.
+	glMultMatrixd (&projection[0][0]);
+	glMultMatrixd (&modelView[0][0]);
+
+	// Go back to normal matrix mode
+	glMatrixMode(GL_MODELVIEW);
 }
 
 
-Texture::~Texture() {
-	if (textureId) glDeleteTextures(1, &textureId);
-}
-
-ShadowMap::ShadowMap(unsigned int width, unsigned int height,
-		GLenum textureTarget, GLenum filter, GLenum attachment, bool clamp): Texture(textureTarget) {
+ShadowMap::ShadowMap(unsigned int width, unsigned int height):
+		width_(width), height_(height) {
 	LOG(info) << "ShadowMap()";
-	//init
- //	if (width > 0 && height > 0 && data != nullptr) {
-	glBindTexture(textureTarget, textureId);
-	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, (float)filter);
-	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, (float)filter);
 
-	if (clamp) {
-		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
-		glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, static_cast<GLfloat>(GL_CLAMP_TO_EDGE));
-	}
+	glGenTextures(1, &textureId_);
+	glBindTexture(GL_TEXTURE_2D, textureId_);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(GL_NEAREST));
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(GL_NEAREST));
 
-	const GLenum internalFormat = GL_DEPTH_COMPONENT16;
-	const GLenum format = GL_DEPTH_COMPONENT;
-	glTexImage2D(textureTarget, 0, static_cast<GLint>(internalFormat), width, height, 0, format, GL_UNSIGNED_BYTE, NULL); //TODO hlasi chybu ale ide
-//	}
+	// Remove artefact on the edges of the shadowmap
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLfloat>(GL_CLAMP));
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLfloat>(GL_CLAMP));
 
-	//init render target
-	GLenum drawBuffer;
-	bool hasDepth = false;
+	// Create an bind texture
+	glTexImage2D( GL_TEXTURE_2D, 0, static_cast<GLint>(GL_DEPTH_COMPONENT), width_, height_, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-	if (attachment == GL_DEPTH_ATTACHMENT) {
-		drawBuffer = GL_NONE;
-		hasDepth = true;
-	} else {
-		drawBuffer = attachment;
-	}
+	//create and bind frame buffer
+	glGenFramebuffersEXT(1, &frameBufferId_);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frameBufferId_);
 
-	if (attachment == GL_NONE) return;
+	// Instruct openGL that we won't color texture
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 
-	glGenFramebuffers(1, &frameBuffer_);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textureTarget, textureId, 0);
+	// attach the texture to FBO depth attachment point
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D, textureId_, 0);
 
-	if (frameBuffer_ == 0) return;
+	// check FBO status
+	if(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
+		printf("GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n");
 
-	glDrawBuffers(1, &drawBuffer);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		throw Exception("Fail to create Frame Buffer.");
-	}
+	// set back window buffer
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 	LOG(info) << "ShadowMap() done";
 }
 
 
-ShadowMap::~ShadowMap() {
-	glDeleteFramebuffers(1, &frameBuffer_);
-}
+ShadowMap::~ShadowMap() {}

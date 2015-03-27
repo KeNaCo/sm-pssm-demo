@@ -14,7 +14,7 @@
 #include <assimp/Importer.hpp>
 
 #include "renderer.hpp"
-#include "handler.hpp"
+//#include "handler.hpp"
 
 /*
  * Controller class
@@ -30,7 +30,7 @@ private:
 
 	//Controls
 	float v;
-	CameraHandler* handler;
+//	CameraHandler* handler;
 
 	//View classes
 	SDL_Window* window;

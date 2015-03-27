@@ -17,20 +17,23 @@
 #include "scene.hpp"
 #include "texture.hpp"
 
-enum class Target { WINDOW, TEXTURE };
+enum class Target { WINDOW, SHADOWMAP };
 
 /**
  * Trieda implementuje zakladne vykreslenie sceny,
  * sluzi ako zaklad pre dalsie odvodene renderovacie triedy
  */
 class Renderer {
-private:
+protected:
 	//view
 	SDL_GLContext gl;
 
 	// model
 	Scene* scene;
 	Shader* shader;
+
+
+	ShadowMap* shadowMap_;
 
 	glm::mat4 projectionMatrix; //TODO hodi sa do objektu kamery
 	unsigned int activeCamera;
@@ -45,26 +48,9 @@ public:
 	virtual ~Renderer();
 
 	void setScene(Scene* scene);
+	void setCamera(Camera* camera, Shader* shader);
 	Camera* getActiveCamera();
 	void updateProjectionMatrix(); //TODO nwm ci to treba
-	virtual void render();
-};
-
-
-/**
- * Trieda implementuje vykreslovanie sceny spolu s vykreslovanim tienov pomocou
- * tienovych map.
- */
-class ShadowMapRenderer: public Renderer {
-private:
-	ShadowMap* shadowMap;
-
-	void setRenderTarget(Target target);
-
-public:
-	ShadowMapRenderer(SDL_Window* window, unsigned int width, unsigned int height);
-	virtual ~ShadowMapRenderer();
-
 	virtual void render();
 };
 

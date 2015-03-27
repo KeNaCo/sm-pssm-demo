@@ -19,7 +19,7 @@
 #include "renderer.hpp"
 #include "exceptions.hpp"
 #include "scene.hpp"
-#include "handler.hpp"
+//#include "handler.hpp"
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -41,18 +41,18 @@ void Core::updateControls() {
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
 			case SDLK_a:
-				handler->move_left(delta, 1, renderer->getActiveCamera());
+//				handler->move_left(delta, 1, renderer->getActiveCamera());
 				break;
 			case SDLK_d:
-				handler->move_right(delta, 1, renderer->getActiveCamera());
+//				handler->move_right(delta, 1, renderer->getActiveCamera());
 				break;
 			case SDLK_w:
 				LOG(debug) << "W";
-				handler->move_forward(delta, 1, renderer->getActiveCamera());
+//				handler->move_forward(delta, 1, renderer->getActiveCamera());
 				break;
 			case SDLK_s:
 				LOG(debug) << "S";
-				handler->move_backward(delta, 1, renderer->getActiveCamera());
+//				handler->move_backward(delta, 1, renderer->getActiveCamera());
 				break;
 			case SDLK_q:
 				if (event.key.keysym.mod & (KMOD_LCTRL | KMOD_RCTRL))
@@ -61,7 +61,7 @@ void Core::updateControls() {
 			}
 			break;
 		case SDL_MOUSEMOTION:
-			handler->mouse_move(event.motion.xrel, event.motion.yrel, renderer->getActiveCamera());
+//			handler->mouse_move(event.motion.xrel, event.motion.yrel, renderer->getActiveCamera());
 			LOG(debug) << "xrel: " << event.motion.xrel
 					   << "yrel: " << event.motion.yrel;
 			break;
@@ -86,7 +86,7 @@ void Core::updateFpsLog() {
 }
 
 
-Core::Core(): quit(false), actTime(0), lastTime(0), delta(0), handler(nullptr) {
+Core::Core(): quit(false), actTime(0), lastTime(0), delta(0) {
 	LOG(info) << "Core::Core()";
 
 	int error = SDL_Init(SDL_INIT_EVERYTHING);
@@ -103,10 +103,9 @@ Core::Core(): quit(false), actTime(0), lastTime(0), delta(0), handler(nullptr) {
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | \
 							  SDL_WINDOW_RESIZABLE
 							  );
-//	renderer = new Renderer(window, "../assets/shader.vert", "../assets/shader.frag", WIDTH, HEIGHT);
-	renderer = new ShadowMapRenderer(window, WIDTH, HEIGHT);
+	renderer = new Renderer(window, "../assets/shader.vert", "../assets/shader.frag", WIDTH, HEIGHT);
 	scene = nullptr;
-	handler = new CameraHandler();
+//	handler = new CameraHandler();
 	v = 1;
 
 	LOG(info) << "Core::Core() done";

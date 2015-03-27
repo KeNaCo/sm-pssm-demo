@@ -8,6 +8,9 @@
 #ifndef SUBPROJECTS__SRC_SHADER_H_
 #define SUBPROJECTS__SRC_SHADER_H_
 
+#include <string>
+
+
 class Shader {
 public:
     Shader(); // Default constructor
@@ -20,6 +23,7 @@ public:
     void unbind(); // Unbind our GLSL shader program
 
     unsigned int id(); // Get the identifier for our program
+    unsigned int getUniform(std::string name);
 
 private:
     unsigned int shader_id; // The shader program identifier

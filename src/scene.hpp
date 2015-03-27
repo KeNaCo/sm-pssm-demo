@@ -14,7 +14,8 @@
 #include "mesh.hpp"
 #include "camera.hpp"
 #include "material.hpp"
-//TODO #include "light.h"
+#include "light.hpp"
+
 
 class Scene {
 	const aiScene* scene;
@@ -23,6 +24,7 @@ public:
 	std::vector<Mesh*>meshes;
 	std::vector<Camera*>cameras;
 	std::vector<Material*>materials;
+	std::vector<DirectLight*>lights;
 
 	Scene(const aiScene* scene);
 	virtual ~Scene();

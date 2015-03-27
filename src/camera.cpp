@@ -7,6 +7,8 @@
 
 #define GLM_FORCE_RADIANS
 
+#include <glbinding/gl/gl.h>
+#include <glbinding/Binding.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <assimp/camera.h>
@@ -16,6 +18,7 @@
 #include "camera.hpp"
 #include "util.hpp"
 
+using namespace gl;
 
 /*
  * Initialize camera from assimp structure
@@ -23,26 +26,25 @@
 Camera::Camera(aiCamera* camera) {
 	LOG(info) << "Camera::Camera()";
 
-	modelMatrix_ = glm::mat4(1.0f);
-	position = aiVector3D_to_Vec3_cast(camera->mPosition);
-	LOG(debug) << "Camera.position [" << position.x << ", "
-									  << position.y << ", "
-									  << position.z << "]";
+	position_ = aiVector3D_to_Vec3_cast(camera->mPosition);
+	LOG(debug) << "Camera.position [" << position_.x << ", "
+									  << position_.y << ", "
+									  << position_.z << "]";
 
-	lookAt = aiVector3D_to_Vec3_cast(camera->mLookAt);
-	LOG(debug) << "Camera.lookAt [" << lookAt.x << ", "
-									<< lookAt.y << ", "
-									<< lookAt.z << "]";
-	up = aiVector3D_to_Vec3_cast(camera->mUp);
-	LOG(debug) << "Camera.up [" << up.x << ", "
-								<< up.y << ", "
-								<< up.z << "]";
+	lookAt_ = aiVector3D_to_Vec3_cast(camera->mLookAt);
+	LOG(debug) << "Camera.lookAt [" << lookAt_.x << ", "
+									<< lookAt_.y << ", "
+									<< lookAt_.z << "]";
+	up_ = aiVector3D_to_Vec3_cast(camera->mUp);
+	LOG(debug) << "Camera.up [" << up_.x << ", "
+								<< up_.y << ", "
+								<< up_.z << "]";
 
-	near = camera->mClipPlaneNear;
-	far = camera->mClipPlaneFar;
-	fov = camera->mHorizontalFOV;
+	near_ = camera->mClipPlaneNear;
+	far_ = camera->mClipPlaneFar;
+	fov_ = camera->mHorizontalFOV;
 
-	name = std::string(camera->mName.C_Str());
+	name_ = std::string(camera->mName.C_Str());
 
 	LOG(info) << "Camera::Camera() done";
 }
@@ -56,29 +58,34 @@ Camera::~Camera() {
  * Calculate view matrix
  */
 glm::mat4 Camera::viewMatrix() {
-	return glm::lookAt(position, lookAt, up);
+	return glm::lookAt(position_, lookAt_, up_);
 }
 
 
 glm::mat4 Camera::projectionMatrix(float width, float height) {
-	return glm::perspective(fov, width/height, near, far);
+	return glm::perspective(fov_, width/height, near_, far_);
 }
 
 
 glm::mat4 Camera::modelMatrix() {
-	return modelMatrix_;
+	return glm::mat4(1.0f);
+}
+
+glm::mat4 Camera::mvp(float width, float height) {
+	return viewMatrix() * projectionMatrix(width, height) * modelMatrix();
 }
 
 
-void Camera::translate(glm::vec3 vec) {
-	modelMatrix_ = glm::translate(modelMatrix_, vec);
-}
+void Camera::set(Shader* shader,  float width, float height) {
+	glm::dmat4 modelViewM = viewMatrix() * modelMatrix();
+	glm::dmat4 projectionM = projectionMatrix(width, height);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixd(&projectionM[0][0]);
 
 
-void Camera::rotate(float angle, glm::vec3 axis) {
-	LOG(info) << "Camera::rotate()";
-	translate(position);
-	modelMatrix_ = glm::rotate(modelMatrix_, angle, axis);
-	translate(-position);
-	LOG(info) << "Camera::rotate() done";
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glMultMatrixd(&modelViewM[0][0]);
 }

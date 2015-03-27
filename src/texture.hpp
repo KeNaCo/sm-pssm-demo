@@ -13,39 +13,25 @@
 
 using namespace gl;
 
-/**
- *
- */
-class Texture {
-protected:
-	GLenum textureTarget;
-	unsigned int textureId;
+
+class ShadowMap {
 	unsigned int width_;
 	unsigned int height_;
-
+	unsigned int textureId_;
+	unsigned int frameBufferId_;
+	unsigned int uniform_;
 public:
 	unsigned int width() { return width_; }
 	unsigned int height() { return height_; }
+	unsigned int textureId() { return textureId_; }
+	unsigned int frameBufferId() { return frameBufferId_; }
+	void uniform(unsigned int uniform) { uniform_ = uniform; }
+	unsigned int uniform() { return uniform_; }
 
-	Texture(GLenum textureTarget);
-	virtual ~Texture();
-};
+	void save();
 
-
-/**
- *
- */
-class ShadowMap: public Texture {
-private:
-	unsigned int frameBuffer_;
-
-public:
-	unsigned int frameBuffer() { return frameBuffer_; }
-
-	ShadowMap(unsigned int width, unsigned int height,
-			GLenum textureTarget=GL_TEXTURE_2D, GLenum filter=GL_NEAREST,
-			GLenum attachment=GL_DEPTH_ATTACHMENT, bool clamp=true);
-	virtual ~ShadowMap();
+	ShadowMap(unsigned int width, unsigned int height);
+	~ShadowMap();
 };
 
 

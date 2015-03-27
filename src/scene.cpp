@@ -11,6 +11,7 @@
 #include "scene.hpp"
 #include "exceptions.hpp"
 
+
 Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumMeshes; i++) {
 		meshes.push_back(new Mesh(scene->mMeshes[i]));
@@ -25,6 +26,9 @@ Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumMaterials; i++) {
 		materials.push_back(new Material(scene->mMaterials[i]));
 	}
+
+	//TODO docasna inicializacia svetiel, natvrdo v triede Light
+	lights.push_back(new DirectLight());
 }
 
 Scene::~Scene() {

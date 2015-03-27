@@ -8,7 +8,7 @@
 #ifndef SUBPROJECTS__SRC_HANDLER_HPP_
 #define SUBPROJECTS__SRC_HANDLER_HPP_
 
-#include <SDL_events.h>
+/*#include <SDL_events.h>
 #include "camera.hpp"
 
 class CameraHandler {
@@ -24,5 +24,5 @@ public:
 
 	void mouse_move(int xrel, int yrel, Camera* camera);
 };
-
+*/
 #endif /* SUBPROJECTS__SRC_HANDLER_HPP_ */

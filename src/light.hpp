@@ -12,29 +12,31 @@
 #include <glm/glm.hpp>
 #include <string>
 
-class ShadowInfo {
+#include "shader.hpp"
+
+
+class DirectLight {
+	float intensity_;
+	glm::vec3 diffuse_;
+	glm::vec3 ambient_;
+	glm::vec3 specular_;
+
+	glm::vec3 position_;
+	glm::vec3 lookAt_;
+	glm::vec3 up_;
+
+	std::string name_;
+
 public:
-	glm::mat4 projectionMatrix;
+	glm::mat4 viewMatrix();
+	glm::mat4 projectionMatrix(float width, float height);
+	glm::mat4 modelMatrix();
+	glm::mat4 mvp(float width, float height);
 
-	ShadowInfo(glm::mat4 projection): projectionMatrix(projection) {};
-	~ShadowInfo() {};
-};
+	void set(Shader* shader, float width, float height);
 
-
-class Light {
-public:
-	float intensity;
-	glm::vec3 diffuse;
-	glm::vec3 ambient;
-	glm::vec3 specular;
-	glm::vec3 position;
-	std::string name;
-
-	ShadowInfo* shadowInfo;
-	//TODO rozsirit o shadery?
-
-	Light(const aiLight* light);
-	virtual ~Light();
+	DirectLight();
+	virtual ~DirectLight();
 };
 
 #endif /* SUBPROJECTS__SRC_LIGHT_HPP_ */
