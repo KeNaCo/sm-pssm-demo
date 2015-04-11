@@ -30,7 +30,6 @@ private:
 
 	//Controls
 	float v;
-//	CameraHandler* handler;
 
 	//View classes
 	SDL_Window* window;

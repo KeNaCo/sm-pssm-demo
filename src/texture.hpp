@@ -11,6 +11,8 @@
 
 #include <glbinding/gl/gl.h>
 
+#include "light.hpp"
+
 using namespace gl;
 
 
@@ -19,6 +21,7 @@ class ShadowMap {
 	unsigned int height_;
 	unsigned int textureId_;
 	unsigned int frameBufferId_;
+	unsigned int depthBufferId_;
 	unsigned int uniform_;
 public:
 	unsigned int width() { return width_; }
@@ -28,7 +31,7 @@ public:
 	void uniform(unsigned int uniform) { uniform_ = uniform; }
 	unsigned int uniform() { return uniform_; }
 
-	void save();
+	void save(DirectLight* light);
 
 	ShadowMap(unsigned int width, unsigned int height);
 	~ShadowMap();

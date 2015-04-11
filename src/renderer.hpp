@@ -35,7 +35,6 @@ protected:
 
 	ShadowMap* shadowMap_;
 
-	glm::mat4 projectionMatrix; //TODO hodi sa do objektu kamery
 	unsigned int activeCamera;
 
 public:
@@ -48,9 +47,8 @@ public:
 	virtual ~Renderer();
 
 	void setScene(Scene* scene);
-	void setCamera(Camera* camera, Shader* shader);
 	Camera* getActiveCamera();
-	void updateProjectionMatrix(); //TODO nwm ci to treba
+
 	virtual void render();
 };
 
