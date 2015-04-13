@@ -33,63 +33,6 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 	gl = SDL_GL_CreateContext(window);
 	glbinding::Binding::initialize();
 
-	shader = new Shader(vertexShader, fragShader);
-
-
-/*
-	// Two UV coordinatesfor each vertex. They were created with Blender. You'll learn shortly how to do this yourself.
-	static const GLfloat uvData[] = {
-	    0.000059f, 1.0f-0.000004f,
-	    0.000103f, 1.0f-0.336048f,
-	    0.335973f, 1.0f-0.335903f,
-	    1.000023f, 1.0f-0.000013f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.999958f, 1.0f-0.336064f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.336024f, 1.0f-0.671877f,
-	    0.667969f, 1.0f-0.671889f,
-	    1.000023f, 1.0f-0.000013f,
-	    0.668104f, 1.0f-0.000013f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.000059f, 1.0f-0.000004f,
-	    0.335973f, 1.0f-0.335903f,
-	    0.336098f, 1.0f-0.000071f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.335973f, 1.0f-0.335903f,
-	    0.336024f, 1.0f-0.671877f,
-	    1.000004f, 1.0f-0.671847f,
-	    0.999958f, 1.0f-0.336064f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.668104f, 1.0f-0.000013f,
-	    0.335973f, 1.0f-0.335903f,
-	    0.667979f, 1.0f-0.335851f,
-	    0.335973f, 1.0f-0.335903f,
-	    0.668104f, 1.0f-0.000013f,
-	    0.336098f, 1.0f-0.000071f,
-	    0.000103f, 1.0f-0.336048f,
-	    0.000004f, 1.0f-0.671870f,
-	    0.336024f, 1.0f-0.671877f,
-	    0.000103f, 1.0f-0.336048f,
-	    0.336024f, 1.0f-0.671877f,
-	    0.335973f, 1.0f-0.335903f,
-	    0.667969f, 1.0f-0.671889f,
-	    1.000004f, 1.0f-0.671847f,
-	    0.667979f, 1.0f-0.335851f
-	};
-
-	glGenBuffers(1, &uvBuffer_);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer_);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uvData), uvData, GL_STATIC_DRAW);
-
-	texture = new BMPTexture("../assets/texture.bmp");
-	texture->bind();
-	glTexImage2D(GL_TEXTURE_2D, 0, static_cast<int>(GL_RGB), texture->width, texture->height, 0, GL_BGR, GL_UNSIGNED_BYTE, texture->data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int>(GL_NEAREST));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int>(GL_NEAREST));
-
-	texture->uniformId = glGetUniformLocation(shader->id(), "myTextureSampler");*/
-
-
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -99,70 +42,15 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 //	glEnable(GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	light_ = new Light();
-
-//	camera_ = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0), 0.1f, 100.f, 45.f);
+	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
 	mvpUniformId_ = shader->getUniform("MVP");
-	modelUniformId_ = shader->getUniform("M");
-	viewUniformId_ = shader->getUniform("V");
-
-	lightPositionUniformId_ = shader->getUniform("LightPosition_worldspace");
-//	glUniform3f(lightPositionUniformId_, light_->position.x, light_->position.y, light_->position.z);
-/*	lightColorUniformId_ = shader->getUniform("LightColor");
-	glUniform3f(lightColorUniformId_, light_->color.r, light_->color.g, light_->color.b);
-	lightIntensityUniformId_ = shader->getUniform("LightPower");
-	glUniform1f(lightIntensityUniformId_, light_->intensity_);*/
+	depthBiasmvpUniformId_ = shader->getUniform("DepthBiasMVP");
+	shadowMapUniformId_ = shader->getUniform("shadowMap");
 
 
-
-
-	shadowMap_ = new ShadowMap(width, height);
-/*	// Generating framebuffer
-	glGenFramebuffers(1, &frameBufferId);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
-
-	texture = new Texture(width, height);
-	texture->bind();
-	glTexImage2D(GL_TEXTURE_2D, 0, static_cast<int>(GL_RGB), texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int>(GL_NEAREST));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int>(GL_NEAREST));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int>(GL_CLAMP_TO_EDGE));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int>(GL_CLAMP_TO_EDGE));
-
-	// depth buffer
-	glGenRenderbuffers(1, &depthBufferId);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBufferId);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferId);
-	// Set "renderedTexture" as our colour attachement #0
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->id, 0);
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		LOG(error) << "Create framebuffer fail!";
-	}
-*/
-
-
-	static const GLfloat quad[] = {
-			-1.0f, -1.0f, 0.0f,
-			 1.0f, -1.0f, 0.0f,
-			-1.0f,  1.0f, 0.0f,
-			-1.0f,  1.0f, 0.0f,
-			 1.0f, -1.0f, 0.0f,
-			 1.0f,  1.0f, 0.0f,
-		};
-
-	glGenBuffers(1, &q_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, q_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-
-	q_shader = new Shader("../assets/passthrough.vert", "../assets/base_shader.frag");
-	qTextureUniformId = q_shader->getUniform("renderedTexture");
-	qTimeUniformId = q_shader->getUniform("time");
-
+	shadowMap_ = new ShadowMap(1024, 1024);
+	shadowMapShader_ = new Shader("../assets/shadow_map.vert", "../assets/shadow_map.frag");
+	depthmvpUniformId_ = shadowMapShader_->getUniform("depthMVP");
 
 	LOG(info) << "Renderer() done";
 }
@@ -196,47 +84,25 @@ void Renderer::render() {
 	LOG(info) << "Renderer_t.render()";
 
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap_->frameBufferId);
-	glViewport(0,0,width, height);
+	glViewport(0,0,shadowMap_->width, shadowMap_->height);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	shader->bind();
+	shadowMapShader_->bind();
 
-	glm::mat4 MVP = getActiveCamera()->mvp(width, height);
-	glm::mat4 M = getActiveCamera()->modelMatrix();
-	glm::mat4 V = getActiveCamera()->viewMatrix();
-	glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);
-	glUniformMatrix4fv(modelUniformId_, 1, GL_FALSE, &M[0][0]);
-	glUniformMatrix4fv(viewUniformId_, 1, GL_FALSE, &V[0][0]);
+	glm::mat4 depthMVP = scene->lights[0]->mvp(shadowMap_->width, shadowMap_->height);
+	glUniformMatrix4fv(depthmvpUniformId_, 1, GL_FALSE, &depthMVP[0][0]);
 
-	glUniform3f(lightPositionUniformId_, light_->position.x, light_->position.y, light_->position.z);
-
-/*	glActiveTexture(GL_TEXTURE0);
-	texture->bind();
-	glUniform1i(texture->uniformId, 0); //nastavi texture uniform na texture0
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer_);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glDrawArrays(GL_TRIANGLES, 0, 12*3);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);*/
 
 	for (auto mesh: scene->meshes) {
 
 		mesh->render();
 	}
 
-	shader->unbind();
-
-
-
+	shadowMapShader_->unbind();
 
 	LOG(debug) << "Prvy render done";
 
@@ -244,25 +110,37 @@ void Renderer::render() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0,0, width, height);
 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	q_shader->bind();
+	shader->bind();
+
+	glm::mat4 MVP = getActiveCamera()->mvp(width, height);
+	glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);
+
+	glm::mat4 biasMatrix(
+		0.5, 0.0, 0.0, 0.0,
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+	);
+
+	glm::mat4 depthBiasMVP = biasMatrix * depthMVP;
+	glUniformMatrix4fv(depthBiasmvpUniformId_, 1, GL_FALSE, &depthBiasMVP[0][0]);
+
 
 	glActiveTexture(GL_TEXTURE0);
-//	texture->bind();
 	shadowMap_->bind();
-
-	glUniform1i(qTextureUniformId, 0);
-	glUniform1f(qTimeUniformId, (float)(SDL_GetTicks()));
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, q_vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(0);
+	glUniform1i(shadowMapUniformId_, 0);
 
 
-	q_shader->unbind();
+	for (auto mesh: scene->meshes) {
+
+		mesh->render();
+	}
+
+	shader->unbind();
 
 
 	LOG(info) << "Renderer_t.render() done";

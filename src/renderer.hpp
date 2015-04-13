@@ -32,27 +32,29 @@ protected:
 
 	// model
 	Scene* scene;
-	Shader* shader;
-	ShadowMap* shadowMap_;
 	unsigned int activeCamera;
 
-//	Camera* camera_;
-	Light* light_;
+	Shader* shader;
 	unsigned int mvpUniformId_;
 	unsigned int modelUniformId_;
 	unsigned int viewUniformId_;
-	unsigned int lightPositionUniformId_;
-	unsigned int lightColorUniformId_;
-	unsigned int lightIntensityUniformId_;
-//	unsigned int uvBuffer_;
-//	BMPTexture* texture;
-	Texture* texture;
-	unsigned int q_vbo;
-//	unsigned int depthBufferId;
-//	unsigned int frameBufferId;
-	Shader* q_shader;
+	unsigned int depthBiasmvpUniformId_;
+	unsigned int shadowMapUniformId_;
+	unsigned int lightInvDirectionUniformId_;
+
+	ShadowMap* shadowMap_;
+	Shader* shadowMapShader_;
+	unsigned int depthmvpUniformId_;
+
+	unsigned int qvbo;
+	Shader* qshader;
 	unsigned int qTextureUniformId;
-	unsigned int qTimeUniformId;
+
+
+//	unsigned int lightPositionUniformId_;
+//	unsigned int lightColorUniformId_;
+//	unsigned int lightIntensityUniformId_;
+
 
 public:
 	//TODO toto nwm ci tu musi byt, popremyslat o tom

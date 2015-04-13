@@ -52,8 +52,8 @@ Camera::Camera(aiCamera* camera) {
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt, glm::vec3 up,
 			   float near, float far, float fov):
-			position_(position), lookAt_(lookAt), up_(up),
-			near_(near), far_(far), fov_(fov) {
+		near_(near), far_(far), fov_(fov),
+		position_(position), lookAt_(lookAt), up_(up) {
 
 	LOG(info) << "Camera::Camera()";
 
@@ -98,19 +98,4 @@ glm::mat4 Camera::modelMatrix() {
 
 glm::mat4 Camera::mvp(float width, float height) {
 	return projectionMatrix(width, height) * viewMatrix() * modelMatrix();
-}
-
-
-void Camera::set(Shader* shader,  float width, float height) {
-	glm::dmat4 modelViewM = viewMatrix() * modelMatrix();
-	glm::dmat4 projectionM = projectionMatrix(width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixd(&projectionM[0][0]);
-
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glMultMatrixd(&modelViewM[0][0]);
 }

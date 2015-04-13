@@ -28,25 +28,15 @@ public:
 };
 
 
-class DirectLight {
-	float intensity_;
-	glm::vec3 diffuse_;
-	glm::vec3 ambient_;
-	glm::vec3 specular_;
-
-	glm::vec3 position_;
+class DirectLight: public Light {
 	glm::vec3 lookAt_;
 	glm::vec3 up_;
-
-	std::string name_;
 
 public:
 	glm::mat4 viewMatrix();
 	glm::mat4 projectionMatrix(float width, float height);
 	glm::mat4 modelMatrix();
 	glm::mat4 mvp(float width, float height);
-
-	void set(Shader* shader, float width, float height);
 
 	DirectLight();
 	virtual ~DirectLight();

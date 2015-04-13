@@ -34,15 +34,14 @@ Light::Light(aiLight* light) {
 Light::~Light() {}
 
 
-DirectLight::DirectLight(): intensity_(1), diffuse_{0.5, 0.5, 0.5}, ambient_{0.2, 0.2, 0.2},
-		specular_{0.5, 0.5, 0.5}, position_{6.9, 2.5, 5.0} {
+DirectLight::DirectLight(): Light() {
 
-	LOG(info) << "Light()";
+	LOG(info) << "DirectLight()";
 
-	lookAt_ = glm::vec3(1.f) - position_; //TODO napevno!!
+	lookAt_ = glm::vec3(0.f,0.f,0.f) - position; //TODO napevno!!
 	up_ = glm::vec3(0.f,0.f,1.f); // Blender ma y ako hlbku
 
-	LOG(info) << "Light() done";
+	LOG(info) << "DirectLight() done";
 }
 
 
@@ -51,13 +50,13 @@ DirectLight::~DirectLight() {}
 
 
 glm::mat4 DirectLight::viewMatrix() {
-	return glm::lookAt(position_, lookAt_, up_);
+	return glm::lookAt(position, lookAt_, up_);
 }
 
 
 glm::mat4 DirectLight::projectionMatrix(float width, float height) {
-	float rad = glm::radians(45.f);
-	return glm::perspective(rad, width/height, 1.f, 10000.f); //TODO natvrdo!
+
+	return glm::ortho<float>(-10,10,-10,10,-10,20);
 }
 
 glm::mat4 DirectLight::modelMatrix() {
@@ -66,20 +65,5 @@ glm::mat4 DirectLight::modelMatrix() {
 
 
 glm::mat4 DirectLight::mvp(float width, float height) {
-	return viewMatrix() * projectionMatrix(width, height) * modelMatrix();
-}
-
-
-void DirectLight::set(Shader* shader,  float width, float height) {
-	glm::dmat4 modelViewM = viewMatrix() * modelMatrix();
-	glm::dmat4 projectionM = projectionMatrix(width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixd(&projectionM[0][0]);
-
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glMultMatrixd(&modelViewM[0][0]);
+	return projectionMatrix(width, height) * viewMatrix() * modelMatrix();
 }
