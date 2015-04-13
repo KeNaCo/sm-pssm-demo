@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 project(sm-pssm-demo)
 
 # Use our modified FindSDL2* modules

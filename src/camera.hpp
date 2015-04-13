@@ -39,6 +39,8 @@ public:
 	void set(Shader* shader, float width, float height);
 
 	Camera(aiCamera* camera);
+	Camera(glm::vec3 position, glm::vec3 lookAt, glm::vec3 up,
+			float near, float far, float fov);
 	virtual ~Camera();
 };
 

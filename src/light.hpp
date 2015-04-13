@@ -15,6 +15,19 @@
 #include "shader.hpp"
 
 
+class Light {
+public:
+	float intensity_;
+	glm::vec3 color;
+
+	glm::vec3 position;
+
+	Light();
+	Light(aiLight* light);
+	~Light();
+};
+
+
 class DirectLight {
 	float intensity_;
 	glm::vec3 diffuse_;

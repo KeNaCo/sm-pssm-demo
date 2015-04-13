@@ -24,12 +24,13 @@ class Mesh {
 	unsigned int materialIndex;
 
 public:
+
+	unsigned int normalBufferId() { return vbo[NORMAL_BUFFER]; };
 	unsigned int material() { return materialIndex; };
+	void render();
 
 	Mesh(const aiMesh* mesh);
 	virtual ~Mesh();
-
-	void render();
 };
 
 #endif /* SUBPROJECTS__SRC_MESH_H_ */

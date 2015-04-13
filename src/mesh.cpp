@@ -41,9 +41,6 @@ Mesh::Mesh(const aiMesh* mesh) {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[VERTEX_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, numVertItems * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
-
 		delete[] vertices;
 	}
 
@@ -60,9 +57,6 @@ Mesh::Mesh(const aiMesh* mesh) {
 		glGenBuffers(1, &vbo[INDEX_BUFFER]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[INDEX_BUFFER]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW);
-
-//		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-//		glEnableVertexAttribArray (3);
 
 		delete[] indices;
 	}
@@ -84,9 +78,6 @@ Mesh::Mesh(const aiMesh* mesh) {
 		glGenBuffers(1, &vbo[NORMAL_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[NORMAL_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, 3 * mesh->mNumVertices * sizeof(GLfloat), normals, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(2);
 
 		delete normals;
 	}
@@ -111,7 +102,23 @@ void Mesh::render() {
 	LOG(info) << "Mesh::render()";
 
 	glBindVertexArray(vao);
+
+	// Vertices
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[VERTEX_BUFFER]);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(0);
+
+	// Normals
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[NORMAL_BUFFER]);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
+
+	// Render from indices
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+
 	glBindVertexArray(0);
 
 	LOG(info) << "Mesh::render() done";

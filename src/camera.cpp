@@ -49,6 +49,30 @@ Camera::Camera(aiCamera* camera) {
 	LOG(info) << "Camera::Camera() done";
 }
 
+
+Camera::Camera(glm::vec3 position, glm::vec3 lookAt, glm::vec3 up,
+			   float near, float far, float fov):
+			position_(position), lookAt_(lookAt), up_(up),
+			near_(near), far_(far), fov_(fov) {
+
+	LOG(info) << "Camera::Camera()";
+
+	LOG(debug) << "Camera.position [" << position_.x << ", "
+									  << position_.y << ", "
+									  << position_.z << "]";
+
+	LOG(debug) << "Camera.lookAt [" << lookAt_.x << ", "
+									<< lookAt_.y << ", "
+									<< lookAt_.z << "]";
+	LOG(debug) << "Camera.up [" << up_.x << ", "
+								<< up_.y << ", "
+								<< up_.z << "]";
+
+	name_ = std::string("customCamera");
+
+	LOG(info) << "Camera::Camera() done";
+}
+
 Camera::~Camera() {
 	// TODO Auto-generated destructor stub
 }
@@ -64,6 +88,7 @@ glm::mat4 Camera::viewMatrix() {
 
 glm::mat4 Camera::projectionMatrix(float width, float height) {
 	return glm::perspective(fov_, width/height, near_, far_);
+//	return glm::ortho(-5.f, 5.f, -5.f, 5.f, near_, far_);
 }
 
 
@@ -72,7 +97,7 @@ glm::mat4 Camera::modelMatrix() {
 }
 
 glm::mat4 Camera::mvp(float width, float height) {
-	return viewMatrix() * projectionMatrix(width, height) * modelMatrix();
+	return projectionMatrix(width, height) * viewMatrix() * modelMatrix();
 }
 
 

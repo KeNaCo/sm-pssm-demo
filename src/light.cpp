@@ -17,6 +17,23 @@
 using namespace gl;
 
 
+Light::Light(): intensity_(60), color{1.f,1.f,1.f}, position{5.9, 2.5, 4.0} {
+	LOG(info) << "Light()";
+	LOG(debug) << "Light.position [" << position.x << ", " << position.y << ", " << position.z << "]";
+	LOG(debug) << "Light.color [" << color.r << ", " << color.g << ", " << color.b << "]";
+	LOG(debug) << "Light.intensity " << intensity_;
+	LOG(info) << "Light() done";
+}
+
+
+Light::Light(aiLight* light) {
+	// TODO
+}
+
+
+Light::~Light() {}
+
+
 DirectLight::DirectLight(): intensity_(1), diffuse_{0.5, 0.5, 0.5}, ambient_{0.2, 0.2, 0.2},
 		specular_{0.5, 0.5, 0.5}, position_{6.9, 2.5, 5.0} {
 

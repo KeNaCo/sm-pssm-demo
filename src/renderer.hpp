@@ -17,6 +17,8 @@
 #include "scene.hpp"
 #include "texture.hpp"
 
+#include "camera.hpp"
+
 enum class Target { WINDOW, SHADOWMAP };
 
 /**
@@ -31,11 +33,26 @@ protected:
 	// model
 	Scene* scene;
 	Shader* shader;
-
-
 	ShadowMap* shadowMap_;
-
 	unsigned int activeCamera;
+
+//	Camera* camera_;
+	Light* light_;
+	unsigned int mvpUniformId_;
+	unsigned int modelUniformId_;
+	unsigned int viewUniformId_;
+	unsigned int lightPositionUniformId_;
+	unsigned int lightColorUniformId_;
+	unsigned int lightIntensityUniformId_;
+//	unsigned int uvBuffer_;
+//	BMPTexture* texture;
+	Texture* texture;
+	unsigned int q_vbo;
+//	unsigned int depthBufferId;
+//	unsigned int frameBufferId;
+	Shader* q_shader;
+	unsigned int qTextureUniformId;
+	unsigned int qTimeUniformId;
 
 public:
 	//TODO toto nwm ci tu musi byt, popremyslat o tom

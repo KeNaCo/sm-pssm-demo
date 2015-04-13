@@ -10,28 +10,41 @@
 
 
 #include <glbinding/gl/gl.h>
+#include <string>
 
 #include "light.hpp"
 
 using namespace gl;
+using namespace std;
 
-
-class ShadowMap {
-	unsigned int width_;
-	unsigned int height_;
-	unsigned int textureId_;
-	unsigned int frameBufferId_;
-	unsigned int depthBufferId_;
-	unsigned int uniform_;
+class Texture {
 public:
-	unsigned int width() { return width_; }
-	unsigned int height() { return height_; }
-	unsigned int textureId() { return textureId_; }
-	unsigned int frameBufferId() { return frameBufferId_; }
-	void uniform(unsigned int uniform) { uniform_ = uniform; }
-	unsigned int uniform() { return uniform_; }
+	unsigned int id;
+	unsigned int uniformId;
+	unsigned int width;
+	unsigned int height;
+	char* data;
 
-	void save(DirectLight* light);
+	void bind();
+
+	Texture(unsigned int width=0, unsigned int height=0);
+	~Texture();
+};
+
+class BMPTexture: public Texture {
+public:
+	char header[54];
+	unsigned int dataPos;
+
+	BMPTexture(string filename);
+	~BMPTexture();
+};
+
+
+class ShadowMap: public Texture {
+public:
+	unsigned int frameBufferId;
+	unsigned int depthBufferId;
 
 	ShadowMap(unsigned int width, unsigned int height);
 	~ShadowMap();
