@@ -44,13 +44,31 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 
 	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
 	mvpUniformId_ = shader->getUniform("MVP");
+	modelUniformId_ = shader->getUniform("M");
+	viewUniformId_ = shader->getUniform("V");
 	depthBiasmvpUniformId_ = shader->getUniform("DepthBiasMVP");
 	shadowMapUniformId_ = shader->getUniform("shadowMap");
+	lightInvDirectionUniformId_ = shader->getUniform("LightInvDirection_worldspace");
 
 
-	shadowMap_ = new ShadowMap(1024, 1024);
+	shadowMap_ = new ShadowMap(512, 512);
 	shadowMapShader_ = new Shader("../assets/shadow_map.vert", "../assets/shadow_map.frag");
 	depthmvpUniformId_ = shadowMapShader_->getUniform("depthMVP");
+
+	static const float quad[] = {
+		-1.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f,
+	};
+
+	glGenBuffers(1, &qvbo);
+	glBindBuffer(GL_ARRAY_BUFFER, qvbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+	qshader = new Shader("../assets/passthrough.vert", "../assets/base_texture.frag");
+	qTextureUniformId = qshader->getUniform("texture");
 
 	LOG(info) << "Renderer() done";
 }
@@ -116,6 +134,10 @@ void Renderer::render() {
 
 	shader->bind();
 
+	glm::mat4 M = getActiveCamera()->modelMatrix();
+	glUniformMatrix4fv(modelUniformId_, 1, GL_FALSE, &M[0][0]);
+	glm::mat4 V = getActiveCamera()->viewMatrix();
+	glUniformMatrix4fv(viewUniformId_, 1, GL_FALSE, &V[0][0]);
 	glm::mat4 MVP = getActiveCamera()->mvp(width, height);
 	glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);
 
@@ -129,6 +151,9 @@ void Renderer::render() {
 	glm::mat4 depthBiasMVP = biasMatrix * depthMVP;
 	glUniformMatrix4fv(depthBiasmvpUniformId_, 1, GL_FALSE, &depthBiasMVP[0][0]);
 
+	glm::vec3 lightPos = scene->lights[0]->position;
+	glUniform3f(lightInvDirectionUniformId_, lightPos.x, lightPos.y, lightPos.z);
+
 
 	glActiveTexture(GL_TEXTURE0);
 	shadowMap_->bind();
@@ -141,6 +166,23 @@ void Renderer::render() {
 	}
 
 	shader->unbind();
+
+	glViewport(0,0, width/4, height/4);
+
+	qshader->bind();
+
+	glActiveTexture(GL_TEXTURE0);
+	shadowMap_->bind();
+	glUniform1i(qTextureUniformId, 0);
+
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, qvbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+
+	qshader->unbind();
 
 
 	LOG(info) << "Renderer_t.render() done";
