@@ -52,12 +52,12 @@ void main()
 	// Fixed bias, or...
 	float bias = 0.005;
 	// ...variable bias
-	// float bias = 0.005*tan(acos(cosTheta));
+	 //float bias = 0.005*tan(acos(cosTheta));
 	// bias = clamp(bias, 0,0.01);
 	
 	float visibility = 1.0;
 //	if ( texture( shadowMap, (ShadowCoord.xy/ShadowCoord.w) ).z  <  (ShadowCoord.z-bias)/ShadowCoord.w ) {
-	if ( texture( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z ) {
+	if ( texture( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z-bias ) {
 		visibility = 0.5;
 	}
 	
