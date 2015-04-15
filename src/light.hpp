@@ -12,33 +12,36 @@
 #include <glm/glm.hpp>
 #include <string>
 
+#include "object.hpp"
 #include "shader.hpp"
 
 
-class Light {
-public:
+class Light: public Object {
+protected:
 	float intensity_;
-	glm::vec3 color;
+	glm::vec3 color_;
+	glm::mat4 projectionMatrix_;
+public:
 
-	glm::vec3 position;
+	float intensity() { return intensity_; }
+	glm::vec3 color() { return color_; }
+	glm::mat4 projectionMatrix() { return projectionMatrix_; }
 
 	Light();
-	Light(aiLight* light);
 	~Light();
 };
 
 
 class DirectLight: public Light {
-	glm::vec3 lookAt_;
-	glm::vec3 up_;
+protected:
+	glm::vec3 direction_;
 
 public:
-	glm::mat4 viewMatrix();
-	glm::mat4 projectionMatrix(float width, float height);
-	glm::mat4 modelMatrix();
-	glm::mat4 mvp(float width, float height);
+	glm::mat4 modelMatrix() { return modelMatrix_; }
+	glm::vec3 direction() { return direction_; }
 
 	DirectLight();
+	DirectLight(aiLight* light);
 	virtual ~DirectLight();
 };
 

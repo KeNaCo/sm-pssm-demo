@@ -10,7 +10,6 @@
 
 #include <glm/glm.hpp>
 
-#include "log.hpp"
 
 inline glm::mat4 aiMatrix4x4ToMat4_cast(aiMatrix4x4& matrix) {
 	return glm::mat4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
@@ -25,9 +24,15 @@ inline glm::vec3 aiVector3D_to_Vec3_cast(aiVector3D& vector) {
 }
 
 
+inline glm::vec3 aiColor3D_to_Vec3_cast(aiColor3D& color) {
+	return glm::vec3(color.r, color.g, color.b);
+}
+
+
 inline glm::vec4 aiColor4D_to_Vec4_cast(aiColor4D& color) {
 	return glm::vec4(color.r, color.g, color.b, color.a);
 }
+
 
 inline void aiColor3D_to_float_cast(float* color, const aiColor3D& aiColor) {
 	color[0] = aiColor.r;

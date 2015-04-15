@@ -42,6 +42,7 @@ protected:
 	unsigned int shadowMapUniformId_;
 	unsigned int lightInvDirectionUniformId_;
 
+	Camera lightCamera;
 	ShadowMap* shadowMap_;
 	Shader* shadowMapShader_;
 	unsigned int depthmvpUniformId_;

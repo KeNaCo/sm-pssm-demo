@@ -9,10 +9,12 @@
 
 #include <SDL.h>
 #include <SDL_video.h>
+#include <boost/range/adaptor/map.hpp>
 #include <glbinding/gl/gl.h>
 #include <glbinding/Binding.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 
 #include "log.hpp"
 #include "renderer.hpp"
@@ -49,7 +51,6 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 	depthBiasmvpUniformId_ = shader->getUniform("DepthBiasMVP");
 	shadowMapUniformId_ = shader->getUniform("shadowMap");
 	lightInvDirectionUniformId_ = shader->getUniform("LightInvDirection_worldspace");
-
 
 	shadowMap_ = new ShadowMap(512, 512);
 	shadowMapShader_ = new Shader("../assets/shadow_map.vert", "../assets/shadow_map.frag");
@@ -101,26 +102,28 @@ Camera* Renderer::getActiveCamera() {
 void Renderer::render() {
 	LOG(info) << "Renderer_t.render()";
 
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap_->frameBufferId);
-	glViewport(0,0,shadowMap_->width, shadowMap_->height);
+	glm::mat4 depthMVP;
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	for (auto&& light: scene->lights | boost::adaptors::map_values) {
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMap_->frameBufferId);
+		glViewport(0,0,shadowMap_->width, shadowMap_->height);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		lightCamera = Camera(dynamic_cast<DirectLight*>(light));
+		depthMVP = lightCamera.mvp();
 
-	shadowMapShader_->bind();
+		shadowMapShader_->bind();
 
-	glm::mat4 depthMVP = scene->lights[0]->mvp(shadowMap_->width, shadowMap_->height);
-	glUniformMatrix4fv(depthmvpUniformId_, 1, GL_FALSE, &depthMVP[0][0]);
+		glUniformMatrix4fv(depthmvpUniformId_, 1, GL_FALSE, &depthMVP[0][0]);
 
+		for (auto mesh: scene->meshes) {
+			mesh->render();
+		}
+		shadowMapShader_->unbind();
 
-	for (auto mesh: scene->meshes) {
-
-		mesh->render();
 	}
-
-	shadowMapShader_->unbind();
 
 	LOG(debug) << "Prvy render done";
 
@@ -148,10 +151,10 @@ void Renderer::render() {
 		0.5, 0.5, 0.5, 1.0
 	);
 
-	glm::mat4 depthBiasMVP = biasMatrix * depthMVP;
+	glm::mat4 depthBiasMVP = biasMatrix * depthMVP; // TODO naivny predpoklad jedneho svetla
 	glUniformMatrix4fv(depthBiasmvpUniformId_, 1, GL_FALSE, &depthBiasMVP[0][0]);
 
-	glm::vec3 lightPos = scene->lights[0]->position;
+	glm::vec3 lightPos = scene->lights["light_0"]->position();
 	glUniform3f(lightInvDirectionUniformId_, lightPos.x, lightPos.y, lightPos.z);
 
 
@@ -167,6 +170,8 @@ void Renderer::render() {
 
 	shader->unbind();
 
+
+	// Render shadowmapy
 	glViewport(0,0, width/4, height/4);
 
 	qshader->bind();

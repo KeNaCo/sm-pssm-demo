@@ -6,11 +6,13 @@
  */
 
 #include <assimp/scene.h>
+#include <string>
 
 #include "log.hpp"
 #include "scene.hpp"
 #include "exceptions.hpp"
 
+using namespace std;
 
 Scene::Scene(const aiScene* scene): scene(scene){
 	for (unsigned int i=0; i < scene->mNumMeshes; i++) {
@@ -27,18 +29,26 @@ Scene::Scene(const aiScene* scene): scene(scene){
 		materials.push_back(new Material(scene->mMaterials[i]));
 	}
 
-	//TODO docasna inicializacia svetiel, natvrdo v triede Light
-	lights.push_back(new DirectLight());
+	for (unsigned int i=0; i < scene->mNumLights; i++) {
+		LOG(info) << "Push light: " << scene->mLights[i]->mName.C_Str();
+		lights[string(scene->mLights[i]->mName.C_Str())] = new DirectLight(scene->mLights[i]);
+	}
 }
 
 Scene::~Scene() {
 	LOG(info) << "Scene::~Scene()";
 
-	for (auto mesh: meshes)
+	for (auto& mesh: meshes)
 		delete mesh;
 
-	for (auto camera: cameras)
+	for (auto& camera: cameras)
 		delete camera;
+
+	for (auto& material: materials)
+		delete material;
+
+	for (auto& light: lights)
+		delete light.second;
 
 //	delete scene;
 

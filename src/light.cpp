@@ -13,21 +13,16 @@
 
 #include "log.hpp"
 #include "light.hpp"
+#include "util.hpp"
 
 using namespace gl;
 
 
-Light::Light(): intensity_(60), color{1.f,1.f,1.f}, position{5.9, 2.5, 4.0} {
-	LOG(info) << "Light()";
-	LOG(debug) << "Light.position [" << position.x << ", " << position.y << ", " << position.z << "]";
-	LOG(debug) << "Light.color [" << color.r << ", " << color.g << ", " << color.b << "]";
-	LOG(debug) << "Light.intensity " << intensity_;
-	LOG(info) << "Light() done";
-}
-
-
-Light::Light(aiLight* light) {
-	// TODO
+Light::Light(): intensity_(60), color_{1.f,1.f,1.f}{
+	position_ = glm::vec3(5.9, 2.5, 4.0);
+	LOG(info) << "Light(): pos[" << position_.x << ", " << position_.y << ", " << position_.z << "] "
+			  << "color [" << color_.r << ", " << color_.g << ", " << color_.b << "] "
+			  << "intensity " << intensity_;
 }
 
 
@@ -36,34 +31,23 @@ Light::~Light() {}
 
 DirectLight::DirectLight(): Light() {
 
-	LOG(info) << "DirectLight()";
+	direction_ = glm::vec3(0.f,0.f,0.f) - position_; //TODO napevno!!
 
-	lookAt_ = glm::vec3(0.f,0.f,0.f) - position; //TODO napevno!!
-	up_ = glm::vec3(0.f,0.f,1.f); // Blender ma y ako hlbku
+	LOG(info) << "DirectLight() direction[" << direction_.x << ", " << direction_.y << ", " << direction_.z << "]";
 
-	LOG(info) << "DirectLight() done";
+}
+
+
+DirectLight::DirectLight(aiLight* light) {
+	intensity_ = light->mAttenuationConstant;
+	color_ = aiColor3D_to_Vec3_cast(light->mColorAmbient);
+	position_ = aiVector3D_to_Vec3_cast(light->mPosition);
+	direction_ = aiVector3D_to_Vec3_cast(light->mDirection);
+
+	projectionMatrix_ = glm::ortho<float>(-10,10,-10,10,-10,20); // TODO napevno?
+
+	LOG(info) << "DirectLight() direction[" << direction_.x << ", " << direction_.y << ", " << direction_.z << "]";
 }
 
 
 DirectLight::~DirectLight() {}
-
-
-
-glm::mat4 DirectLight::viewMatrix() {
-	return glm::lookAt(position, lookAt_, up_);
-}
-
-
-glm::mat4 DirectLight::projectionMatrix(float width, float height) {
-
-	return glm::ortho<float>(-10,10,-10,10,-10,20);
-}
-
-glm::mat4 DirectLight::modelMatrix() {
-	return glm::mat4(1.f);
-}
-
-
-glm::mat4 DirectLight::mvp(float width, float height) {
-	return projectionMatrix(width, height) * viewMatrix() * modelMatrix();
-}
