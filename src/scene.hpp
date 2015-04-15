@@ -21,8 +21,11 @@
 class Scene {
 	const aiScene* scene;
 
+	void load_meshes(aiNode* node, glm::mat4 modelMatrix);
+	void load_nodes(aiNode*node, glm::mat4 modelMatrix);
+
 public:
-	std::vector<Mesh*>meshes;
+	std::map<std::string, Mesh*>meshes;
 	std::vector<Camera*>cameras;
 	std::vector<Material*>materials;
 	std::map<std::string, Light*>lights;

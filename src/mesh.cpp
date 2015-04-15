@@ -5,8 +5,9 @@
  *      Author: kenaco
  */
 
-#include <glbinding/gl/gl.h>
 #include <assimp/mesh.h>
+#include <glbinding/gl/gl.h>
+#include <glm/glm.hpp>
 
 #include "log.hpp"
 #include "mesh.hpp"
@@ -17,7 +18,7 @@ using namespace gl;
 /*
  * Initialize Mesh, create vao and vbos
  */
-Mesh::Mesh(const aiMesh* mesh) {
+Mesh::Mesh(const aiMesh* mesh, glm::mat4 modelMatrix) {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -84,6 +85,7 @@ Mesh::Mesh(const aiMesh* mesh) {
 
 	glBindVertexArray(0);
 
+	modelMatrix_ = modelMatrix;
 	materialIndex = mesh->mMaterialIndex;
 }
 

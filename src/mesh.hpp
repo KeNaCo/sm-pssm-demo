@@ -11,13 +11,15 @@
 #include <assimp/mesh.h>
 #include <glm/glm.hpp>
 
+#include "object.hpp"
+
 enum MeshEntry {
 	VERTEX_BUFFER=0,
 	INDEX_BUFFER,
 	NORMAL_BUFFER
 };
 
-class Mesh {
+class Mesh: public Object {
 	unsigned int numIndices;
 	unsigned int vao;
 	unsigned int vbo[3];
@@ -29,7 +31,7 @@ public:
 	unsigned int material() { return materialIndex; };
 	void render();
 
-	Mesh(const aiMesh* mesh);
+	Mesh(const aiMesh* mesh, glm::mat4 modelMatrix);
 	virtual ~Mesh();
 };
 
