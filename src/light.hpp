@@ -27,7 +27,7 @@ public:
 	glm::vec3 color() { return color_; }
 	glm::mat4 projectionMatrix() { return projectionMatrix_; }
 
-	Light();
+//	Light();
 	~Light();
 };
 
@@ -37,10 +37,8 @@ protected:
 	glm::vec3 direction_;
 
 public:
-	glm::mat4 modelMatrix() { return modelMatrix_; }
 	glm::vec3 direction() { return direction_; }
 
-	DirectLight();
 	DirectLight(aiLight* light);
 	virtual ~DirectLight();
 };

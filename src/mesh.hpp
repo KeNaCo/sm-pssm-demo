@@ -11,6 +11,7 @@
 #include <assimp/mesh.h>
 #include <glm/glm.hpp>
 
+#include "camera.hpp"
 #include "object.hpp"
 
 enum MeshEntry {

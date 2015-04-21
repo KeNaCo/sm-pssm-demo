@@ -12,6 +12,7 @@
 #include <SDL_video.h>
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
+#include <string>
 
 #include "shader.hpp"
 #include "scene.hpp"
@@ -32,7 +33,7 @@ protected:
 
 	// model
 	Scene* scene;
-	unsigned int activeCamera;
+	std::string activeCamera;
 
 	Shader* shader;
 	unsigned int mvpUniformId_;

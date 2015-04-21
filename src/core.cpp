@@ -85,8 +85,10 @@ Core::Core(): quit(false), actTime(0), lastTime(0), delta(0) {
 	LOG(info) << "Core::Core()";
 
 	int error = SDL_Init(SDL_INIT_EVERYTHING);
-	if (error < 0)
+	if (error < 0) {
+		LOG(error) << "SDL init fail";
 		throw Exception(SDL_GetError());
+	}
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -98,6 +100,11 @@ Core::Core(): quit(false), actTime(0), lastTime(0), delta(0) {
 							  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | \
 							  SDL_WINDOW_RESIZABLE
 							  );
+	if (window == NULL) {
+		LOG(error) << "Create window fail";
+		throw Exception("SDL create window failed!");
+	}
+
 	renderer = new Renderer(window, "../assets/shader.vert", "../assets/shader.frag", WIDTH, HEIGHT);
 	scene = nullptr;
 	v = 1;
@@ -130,8 +137,8 @@ void Core::loadAssets(std::string fileName) {
 	const aiScene* scene = importer.ReadFile(fileName,
 											 aiProcess_Triangulate |
 											 aiProcess_JoinIdenticalVertices |
-											 aiProcess_SortByPType |
-											 aiProcess_PreTransformVertices);
+											 aiProcess_SortByPType); /*|
+											 aiProcess_PreTransformVertices);*/
 	if (!scene) {
 		throw LoadException(importer.GetErrorString());
 	}

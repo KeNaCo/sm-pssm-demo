@@ -21,6 +21,7 @@ void main()
 {
 	// Vertex position in clip space
 	gl_Position = MVP * vec4(vertexPosition_modelspace,1);
+//	gl_Position = vec4(vertexPosition_modelspace,1) * MVP;
 	
 	ShadowCoord = DepthBiasMVP * vec4(vertexPosition_modelspace,1);
 	

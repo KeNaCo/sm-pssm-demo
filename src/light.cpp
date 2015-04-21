@@ -18,35 +18,30 @@
 using namespace gl;
 
 
-Light::Light(): intensity_(60), color_{1.f,1.f,1.f}{
+/*Light::Light(): intensity_(60), color_{1.f,1.f,1.f}{
 	position_ = glm::vec3(5.9, 2.5, 4.0);
-	LOG(info) << "Light(): pos[" << position_.x << ", " << position_.y << ", " << position_.z << "] "
+	LOG(debug) << "Light(): pos[" << position_.x << ", " << position_.y << ", " << position_.z << "] "
 			  << "color [" << color_.r << ", " << color_.g << ", " << color_.b << "] "
 			  << "intensity " << intensity_;
-}
+}*/
 
 
 Light::~Light() {}
 
 
-DirectLight::DirectLight(): Light() {
-
-	direction_ = glm::vec3(0.f,0.f,0.f) - position_; //TODO napevno!!
-
-	LOG(info) << "DirectLight() direction[" << direction_.x << ", " << direction_.y << ", " << direction_.z << "]";
-
-}
-
-
 DirectLight::DirectLight(aiLight* light) {
+	name_ = std::string(light->mName.C_Str());
 	intensity_ = light->mAttenuationConstant;
 	color_ = aiColor3D_to_Vec3_cast(light->mColorAmbient);
 	position_ = aiVector3D_to_Vec3_cast(light->mPosition);
 	direction_ = aiVector3D_to_Vec3_cast(light->mDirection);
 
-	projectionMatrix_ = glm::ortho<float>(-10,10,-10,10,-10,20); // TODO napevno?
+	projectionMatrix_ = glm::ortho<float>(-5,5,-5,5,-5,20); // TODO napevno?
 
-	LOG(info) << "DirectLight() direction[" << direction_.x << ", " << direction_.y << ", " << direction_.z << "]";
+	LOG(debug) << "DirectLight(aiLight): pos[" << position_.x << ", " << position_.y << ", " << position_.z << "] "
+				  << "color [" << color_.r << ", " << color_.g << ", " << color_.b << "] "
+				  << "intensity " << intensity_;
+	LOG(debug) << "DirectLight(aiLight) direction[" << direction_.x << ", " << direction_.y << ", " << direction_.z << "]";
 }
 
 

@@ -18,7 +18,7 @@
 int main(/*int argc, char* argv[]*/)
 {
 	Core core;
-	core.loadAssets("../assets/opica2.blend");
+	core.loadAssets("../assets/opica3.blend");
 	core.renderLoop();
 	return 0;
 }

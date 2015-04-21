@@ -35,7 +35,7 @@ Mesh::Mesh(const aiMesh* mesh, glm::mat4 modelMatrix) {
 
 /*			LOG(debug) << "Vertex[" << mesh->mVertices[i].x << ", "
 									<< mesh->mVertices[i].y << ", "
-									<< mesh->mVertices[i].z << "]"; */
+									<< mesh->mVertices[i].z << "]";*/
 		}
 
 		glGenBuffers(1, &vbo[VERTEX_BUFFER]);
@@ -87,6 +87,7 @@ Mesh::Mesh(const aiMesh* mesh, glm::mat4 modelMatrix) {
 
 	modelMatrix_ = modelMatrix;
 	materialIndex = mesh->mMaterialIndex;
+	name_ = std::string(mesh->mName.C_Str());
 }
 
 

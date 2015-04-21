@@ -26,7 +26,7 @@ class Scene {
 
 public:
 	std::map<std::string, Mesh*>meshes;
-	std::vector<Camera*>cameras;
+	std::map<std::string, Camera*>cameras;
 	std::vector<Material*>materials;
 	std::map<std::string, Light*>lights;
 

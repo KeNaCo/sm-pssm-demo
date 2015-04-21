@@ -9,15 +9,24 @@
 #define SUBPROJECTS__SRC_OBJECT_HPP_
 
 #include <glm/glm.hpp>
+#include <string>
+
 
 class Object {
 protected:
 	glm::vec3 position_;
 	glm::mat4 modelMatrix_;
+
+	std::string name_;
 public:
 	void position(glm::vec3 position) { position_ = position; }
-	glm::vec3 position() { return position_; }
-	glm::vec3 world_position() { return glm::vec3(modelMatrix_ * glm::vec4(position_, 1.f)); }
+	glm::vec3 position();
+	glm::vec3 world_position();
+
+	void modelMatrix(glm::mat4& modelMatrix);
+	glm::mat4 modelMatrix();
+
+	std::string name() { return name_; }
 
 	Object();
 	virtual ~Object();

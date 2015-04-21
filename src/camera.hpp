@@ -28,17 +28,15 @@ class Camera: public Object {
 	glm::mat4 projectionMatrix_;
 
 public:
-	glm::mat4 modelMatrix() { return modelMatrix_; }
 	void lookAt(glm::vec3 lookAt) { lookAt_ = lookAt; }
+	glm::vec3 world_lookAt();
 
 	glm::mat4 viewMatrix();
-	glm::mat4 projectionMatrix(float width, float height);
-	glm::mat4 mvp();
-	glm::mat4 mvp(float width, float height);
+	void projectionMatrix(float width, float height);
+	glm::mat4 projectionMatrix();
+	glm::mat4 mvp(glm::mat4 modelMatrix);
 
-	// Up, lookAt setup for Blender axis orientation
-	Camera(glm::vec3 position={0.f,0.f,0.f}, glm::vec3 lookAt={0.f,1.f,0.f},
-			glm::vec3 up={0.f,0.f,1.f}, float near=0.1f, float far=100.f, float fov=45.f);
+	Camera() {}
 	Camera(DirectLight* light);
 	Camera(aiCamera* camera);
 	virtual ~Camera();
