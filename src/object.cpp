@@ -16,7 +16,7 @@ void Object::modelMatrix(glm::mat4& modelMatrix) {
 }
 
 
-glm::mat4 Object::modelMatrix() {
+glm::mat4& Object::modelMatrix() {
 	LOG_MATRIX(name_+".modelMatrix", modelMatrix_);
 	return modelMatrix_;
 }

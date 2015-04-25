@@ -153,8 +153,29 @@ unsigned int Shader::id() {
     return shader_id; // Return the shaders identifier
 }
 
-unsigned int Shader::getUniform(std::string name) {
+unsigned int Shader::create_uniform(std::string& name) {
 	return glGetUniformLocation(shader_id, name.c_str());
+}
+
+
+unsigned int& Shader::uniform(string name) {
+	auto uniform = uniforms_.find(name);
+	if (uniform != uniforms_.end()) {
+		return uniform->second;
+	} else {
+		uniforms_[name] = create_uniform(name);
+		return uniforms_[name];
+	}
+}
+
+
+void Shader::uniform(string name, glm::mat4& matrix) {
+	glUniformMatrix4fv(uniform(name), 1, GL_FALSE, &matrix[0][0]);
+}
+
+
+void Shader::uniform(string name, glm::vec3& vector) {
+	glUniform3f(uniform(name), vector.x, vector.y, vector.z);
 }
 
 
