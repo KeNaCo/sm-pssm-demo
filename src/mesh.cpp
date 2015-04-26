@@ -15,6 +15,27 @@
 using namespace gl;
 
 
+Mesh::Mesh(string name,const unsigned int numVertices, const float* vertices,
+		const unsigned int numIndices, const unsigned int* indices) {
+	name_ = name;
+	this->numIndices = numIndices;
+	materialIndex = 0;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vbo[VERTEX_BUFFER]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[VERTEX_BUFFER]);
+	glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &vbo[INDEX_BUFFER]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[INDEX_BUFFER]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+}
+
+
 /*
  * Initialize Mesh, create vao and vbos
  */

@@ -10,6 +10,12 @@
 #include "log.hpp"
 
 
+void Object::modelMatrix(glm::mat4 modelMatrix) {
+	modelMatrix_ = modelMatrix;
+	LOG_MATRIX(name_+".modelMatrix = ", modelMatrix_);
+}
+
+
 void Object::modelMatrix(glm::mat4& modelMatrix) {
 	modelMatrix_ = modelMatrix;
 	LOG_MATRIX(name_+".modelMatrix = ", modelMatrix_);

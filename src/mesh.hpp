@@ -21,7 +21,7 @@ enum MeshEntry {
 };
 
 class Mesh: public Object {
-	unsigned int numIndices;
+	unsigned int numIndices; //TODO potrebne?
 	unsigned int vao;
 	unsigned int vbo[3];
 	unsigned int materialIndex;
@@ -32,6 +32,8 @@ public:
 	unsigned int material() { return materialIndex; };
 	void render();
 
+	Mesh(string name,const unsigned int numVertices, const float* vertices,
+			const unsigned int numIndices, const unsigned int* indices);
 	Mesh(const aiMesh* mesh, glm::mat4 modelMatrix);
 	virtual ~Mesh();
 };
