@@ -21,22 +21,43 @@ class Camera: public Object {
 	float far_;
 	float fov_;
 
+	float width_;
+	float height_;
+
 	glm::vec3 lookAt_;
 	glm::vec3 up_;
 
 	glm::mat4 viewMatrix_;
 	glm::mat4 projectionMatrix_;
 
+	void init_viewMatrix();
+	void init_projectionMatrix();
 public:
-	void lookAt(glm::vec3 lookAt) { lookAt_ = lookAt; }
+	void width(const float width);
+	void height(const float height);
+
+	void position(glm::vec3 position);
+
+	void modelMatrix(glm::mat4 modelMatrix);
+
+	void lookAt(glm::vec3 lookAt);
+	glm::vec3 lookAt() { return lookAt_; }
 	glm::vec3 world_lookAt();
 
-	glm::mat4 viewMatrix();
-	void projectionMatrix(float width, float height);
-	glm::mat4 projectionMatrix();
+	void up(glm::vec3 up);
+	glm::vec3 up() { return up_; }
+	glm::vec3 world_up();
+
+	void viewMatrix(glm::mat4 viewMatrix) { viewMatrix_ = viewMatrix; }
+	glm::mat4 viewMatrix() { return viewMatrix_; }
+
+	void projectionMatrix(glm::mat4 projectionMatrix) { projectionMatrix_ = projectionMatrix; }
+	glm::mat4 projectionMatrix() { return projectionMatrix_; }
+
 	glm::mat4 mvp(glm::mat4 modelMatrix);
 
 	Camera() {}
+	Camera(string name, float near, float far, float fov, glm::vec3 lookAt, glm::vec3 up);
 	Camera(DirectLight* light);
 	Camera(aiCamera* camera);
 	virtual ~Camera();

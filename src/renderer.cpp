@@ -92,7 +92,8 @@ void Renderer::setScene(Scene* scene) {
 	activeCamera = scene->cameras.begin()->first;
 
 	//set projection matrix
-	scene->cameras[activeCamera]->projectionMatrix(width, height);
+	scene->cameras[activeCamera]->width(width);
+	scene->cameras[activeCamera]->height(height);
 }
 
 
