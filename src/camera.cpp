@@ -19,32 +19,68 @@
 #include "util.hpp"
 
 using namespace gl;
+using namespace std;
+
+
+void Camera::init_viewMatrix() {
+	viewMatrix_ = glm::lookAt(world_position(), world_lookAt(), world_up());
+}
+
+
+void Camera::init_projectionMatrix() {
+	if (width_ != 0 && height_ != 0)
+		projectionMatrix_= glm::perspective<float>(fov_, width_/height_, near_, far_);
+}
+
+
+void Camera::width(const float width) {
+	width_ = width;
+	init_projectionMatrix();
+}
+
+void Camera::height(const float height) {
+	height_ = height;
+	init_projectionMatrix();
+}
+
+
+void Camera::position(glm::vec3 position) {
+	LOG_VEC3(name_+".position = ", position);
+	position_ = position;
+	init_viewMatrix();
+}
+
+
+void Camera::modelMatrix(glm::mat4 modelMatrix) {
+	LOG_MATRIX(name_+".modelMatrix = ", modelMatrix);
+	modelMatrix_ = modelMatrix;
+	init_viewMatrix();
+}
+
+
+void Camera::lookAt(glm::vec3 lookAt) {
+	lookAt_ = lookAt;
+	init_viewMatrix();
+}
+
+
+void Camera::up(glm::vec3 up) {
+	up_ = up;
+	init_viewMatrix();
+}
 
 
 glm::vec3 Camera::world_lookAt() {
-	glm::vec3 ret = glm::vec3(glm::vec4(lookAt_, 0.f) * modelMatrix_);
+	glm::vec3 ret = glm::vec3(modelMatrix_ * glm::vec4(lookAt_, 0.f));
 	LOG_VEC3(name_+".world_lookAt", ret);
 	return ret;
 }
 
 
-/*
- * Calculate view matrix
- */
-glm::mat4 Camera::viewMatrix() {
-	glm::mat4 ret = glm::lookAt(world_position(), world_lookAt(), up_);
-	LOG_MATRIX(name_+".viewMatrix", ret);
+glm::vec3 Camera::world_up() {
+	glm::vec3 ret = glm::vec3(modelMatrix_ * glm::vec4(up_, 0.f));
+	LOG_VEC3(name_+".world_lookAt", ret);
 	return ret;
-}
-
-
-void Camera::projectionMatrix(float width, float height) {
-	projectionMatrix_ = glm::perspective(fov_, width/height, near_, far_);
-}
-
-glm::mat4 Camera::projectionMatrix() {
-	LOG_MATRIX(name_+".projectionMatrix", projectionMatrix_);
-	return projectionMatrix_;
 }
 
 
@@ -52,6 +88,16 @@ glm::mat4 Camera::mvp(glm::mat4 modelMatrix) {
 	glm::mat4 mvp = projectionMatrix() * viewMatrix() * modelMatrix;
 	LOG_MATRIX(name_ +".mvp", mvp);
 	return mvp;
+}
+
+
+Camera::Camera(string name, float near, float far, float fov, glm::vec3 lookAt, glm::vec3 up):
+		near_(near), far_(far), fov_(fov), lookAt_(lookAt), up_(up) {
+	name_ = name;
+	modelMatrix_ = glm::mat4(1.f);
+	init_viewMatrix();
+	init_projectionMatrix();
+	LOG(info) << "Camera( " << name << " ) done";
 }
 
 
@@ -67,7 +113,7 @@ Camera::Camera(DirectLight* light) {
 
 	lookAt_ = light->direction();
 	up_ = glm::vec3(0.f, 1.f, 0.f);
-	viewMatrix_ = glm::lookAt(world_position(), lookAt_, up_);
+	init_viewMatrix();
 	projectionMatrix_ = light->projectionMatrix();
 
 	LOG_VEC3(name_+".position", position_);

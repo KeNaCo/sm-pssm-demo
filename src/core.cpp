@@ -143,7 +143,9 @@ void Core::loadAssets(std::string fileName) {
 		throw LoadException(importer.GetErrorString());
 	}
 
-	this->scene = new Scene(scene);
+// !!! TODO !!!
+//	this->scene = new Scene(scene);
+	this->scene = new FakeScene();
 	if (this->scene == nullptr)
 		throw Exception("Fail to create instance of Scene.");
 	renderer->setScene(this->scene);

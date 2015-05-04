@@ -30,8 +30,16 @@ public:
 	std::vector<Material*>materials;
 	std::map<std::string, Light*>lights;
 
+	Scene() {};
 	Scene(const aiScene* scene);
-	virtual ~Scene();
+	~Scene();
+};
+
+
+class FakeScene: public Scene {
+public:
+	FakeScene();
+	~FakeScene();
 };
 
 #endif /* SUBPROJECTS__SRC_SCENE_H_ */

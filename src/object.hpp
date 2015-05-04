@@ -23,8 +23,9 @@ public:
 	glm::vec3 position();
 	glm::vec3 world_position();
 
-	void modelMatrix(glm::mat4& modelMatrix);
-	glm::mat4 modelMatrix();
+	void modelMatrix(glm::mat4 modelMatrix);
+//	void modelMatrix(glm::mat4& modelMatrix);
+	glm::mat4& modelMatrix();
 
 	std::string name() { return name_; }
 

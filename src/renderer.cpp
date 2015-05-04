@@ -45,19 +45,19 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 //	glEnable(GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	shader = new Shader("../assets/shader.vert", "../assets/shader.frag");
-	mvpUniformId_ = shader->getUniform("MVP");
+	shader = new Shader("../assets/simple_mvp.vert", "../assets/simple_red.frag");
+/*	mvpUniformId_ = shader->getUniform("MVP");
 	modelUniformId_ = shader->getUniform("M");
 	viewUniformId_ = shader->getUniform("V");
 	depthBiasmvpUniformId_ = shader->getUniform("DepthBiasMVP");
 	shadowMapUniformId_ = shader->getUniform("shadowMap");
-	lightInvDirectionUniformId_ = shader->getUniform("LightInvDirection_worldspace");
+	lightInvDirectionUniformId_ = shader->getUniform("LightInvDirection_worldspace");*/
 
-	shadowMap_ = new ShadowMap(512, 512);
+/*	shadowMap_ = new ShadowMap(512, 512);
 	shadowMapShader_ = new Shader("../assets/shadow_map.vert", "../assets/shadow_map.frag");
-	depthmvpUniformId_ = shadowMapShader_->getUniform("depthMVP");
+	depthmvpUniformId_ = shadowMapShader_->getUniform("depthMVP");*/
 
-	static const float quad[] = {
+/*	static const float quad[] = {
 		-1.0f, -1.0f, 0.0f,
 		 1.0f, -1.0f, 0.0f,
 		-1.0f,  1.0f, 0.0f,
@@ -70,7 +70,7 @@ Renderer::Renderer(SDL_Window* window, const char* vertexShader, const char* fra
 	glBindBuffer(GL_ARRAY_BUFFER, qvbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
 	qshader = new Shader("../assets/passthrough.vert", "../assets/base_texture.frag");
-	qTextureUniformId = qshader->getUniform("texture");
+	qTextureUniformId = qshader->getUniform("texture");*/
 
 	LOG(info) << "Renderer() done";
 }
@@ -90,7 +90,10 @@ Renderer::~Renderer() {
 void Renderer::setScene(Scene* scene) {
 	this->scene = scene;
 	activeCamera = scene->cameras.begin()->first;
-	scene->cameras[activeCamera]->projectionMatrix(width, height);
+
+	//set projection matrix
+	scene->cameras[activeCamera]->width(width);
+	scene->cameras[activeCamera]->height(height);
 }
 
 
@@ -105,10 +108,8 @@ Camera* Renderer::getActiveCamera() {
 void Renderer::render() {
 	LOG(info) << "Renderer_t.render()";
 
-//	glm::mat4 depthMVP = glm::mat4(1.f);
 
-
-	glm::mat4 depthMVP;
+/*	glm::mat4 depthMVP;
 
 	for (auto&& light: scene->lights | boost::adaptors::map_values) {
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowMap_->frameBufferId);
@@ -118,11 +119,8 @@ void Renderer::render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightCamera = Camera(dynamic_cast<DirectLight*>(light));
-//		depthMVP = lightCamera.mvp();
 
 		shadowMapShader_->bind();
-
-//		glUniformMatrix4fv(depthmvpUniformId_, 1, GL_FALSE, &depthMVP[0][0]);
 
 		for (auto mesh: scene->meshes) {
 			depthMVP = lightCamera.mvp(mesh.second->modelMatrix());
@@ -134,7 +132,7 @@ void Renderer::render() {
 
 	}
 
-	LOG(debug) << "Prvy render done!";
+	LOG(debug) << "Prvy render done!";*/
 
 
 
@@ -147,14 +145,14 @@ void Renderer::render() {
 
 	shader->bind();
 
-//	glm::mat4 M = getActiveCamera()->modelMatrix();
-//	glUniformMatrix4fv(modelUniformId_, 1, GL_FALSE, &M[0][0]);
-	glm::mat4 V = getActiveCamera()->viewMatrix();
-	glUniformMatrix4fv(viewUniformId_, 1, GL_FALSE, &V[0][0]);
-//	glm::mat4 MVP = getActiveCamera()->mvp(width, height);
-//	glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);
+	glm::mat4 projectionMatrix = getActiveCamera()->projectionMatrix();
+	shader->uniform("projectionMatrix", projectionMatrix);
+	glm::mat4 viewMatrix = getActiveCamera()->viewMatrix();
+	shader->uniform("viewMatrix", viewMatrix);
+//	glUniformMatrix4fv(viewUniformId_, 1, GL_FALSE, &V[0][0]);
 
 
+/*
 	glm::mat4 biasMatrix(
 		0.5, 0.0, 0.0, 0.0,
 		0.0, 0.5, 0.0, 0.0,
@@ -171,14 +169,16 @@ void Renderer::render() {
 	glActiveTexture(GL_TEXTURE0);
 	shadowMap_->bind(); // texture
 	glUniform1i(shadowMapUniformId_, 0);
+*/
 
 
 	for (auto item: scene->meshes) {
 		Mesh* mesh = item.second;
-		glUniformMatrix4fv(modelUniformId_, 1, GL_FALSE, &(mesh->modelMatrix())[0][0]);
+		shader->uniform("modelMatrix", mesh->modelMatrix());
+//		glUniformMatrix4fv(modelUniformId_, 1, GL_FALSE, &(mesh->modelMatrix())[0][0]);
 
-		glm::mat4 MVP = getActiveCamera()->mvp(mesh->modelMatrix());
-		glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);
+/*		glm::mat4 MVP = getActiveCamera()->mvp(mesh->modelMatrix());
+		glUniformMatrix4fv(mvpUniformId_, 1, GL_FALSE, &MVP[0][0]);*/
 
 		mesh->render();
 	}
@@ -187,7 +187,7 @@ void Renderer::render() {
 
 
 
-	// Render shadowmapy
+/*	// Render shadowmapy
 	glViewport(0,0, width/4, height/4);
 
 	qshader->bind();
@@ -203,7 +203,7 @@ void Renderer::render() {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
 
-	qshader->unbind();
+	qshader->unbind();*/
 
 
 

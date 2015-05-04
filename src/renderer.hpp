@@ -36,21 +36,21 @@ protected:
 	std::string activeCamera;
 
 	Shader* shader;
-	unsigned int mvpUniformId_;
+/*	unsigned int mvpUniformId_;
 	unsigned int modelUniformId_;
 	unsigned int viewUniformId_;
 	unsigned int depthBiasmvpUniformId_;
 	unsigned int shadowMapUniformId_;
-	unsigned int lightInvDirectionUniformId_;
+	unsigned int lightInvDirectionUniformId_;*/
 
-	Camera lightCamera;
+/*	Camera lightCamera;
 	ShadowMap* shadowMap_;
 	Shader* shadowMapShader_;
 	unsigned int depthmvpUniformId_;
 
 	unsigned int qvbo;
 	Shader* qshader;
-	unsigned int qTextureUniformId;
+	unsigned int qTextureUniformId;*/
 
 
 //	unsigned int lightPositionUniformId_;

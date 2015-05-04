@@ -6,6 +6,8 @@
  */
 
 #include <assimp/scene.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <string>
 
 #include "log.hpp"
@@ -120,3 +122,35 @@ Scene::~Scene() {
 	LOG(info) << "Scene::~Scene() done";
 }
 
+
+
+FakeScene::FakeScene(): Scene() {
+	float vertices[] = {
+		-1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f
+	};
+	unsigned int indices[] = {
+		0, 1, 2, 2, 3, 0,
+		3, 2, 6, 6, 7, 3,
+		7, 6, 5, 5, 4, 7,
+		4, 0, 3, 3, 7, 4,
+		0, 1, 5, 5, 4, 0,
+		1, 5, 6, 6, 2, 1
+	};
+	Mesh* kocka = new Mesh("kocka",8*3, &vertices[0],6*2*3, &indices[0]);
+	kocka->modelMatrix(glm::mat4(1.f));
+	meshes["kocka"] = kocka;
+
+	Camera* camera = new Camera("Camera", 0.1f, 100.f, 45.f, glm::vec3(0.f,0.f,-1.f), glm::vec3(0.f,1.f,0.f));
+	camera->modelMatrix(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, 3.f)));
+	cameras["Camera"] = camera;
+}
+
+
+FakeScene::~FakeScene() {}

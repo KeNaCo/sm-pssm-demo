@@ -10,13 +10,19 @@
 #include "log.hpp"
 
 
-void Object::modelMatrix(glm::mat4& modelMatrix) {
+void Object::modelMatrix(glm::mat4 modelMatrix) {
 	modelMatrix_ = modelMatrix;
 	LOG_MATRIX(name_+".modelMatrix = ", modelMatrix_);
 }
 
 
-glm::mat4 Object::modelMatrix() {
+/*void Object::modelMatrix(glm::mat4& modelMatrix) {
+	modelMatrix_ = modelMatrix;
+	LOG_MATRIX(name_+".modelMatrix = ", modelMatrix_);
+}*/
+
+
+glm::mat4& Object::modelMatrix() {
 	LOG_MATRIX(name_+".modelMatrix", modelMatrix_);
 	return modelMatrix_;
 }
@@ -28,7 +34,7 @@ glm::vec3 Object::position() {
 }
 
 glm::vec3 Object::world_position() {
-	glm::vec3 ret = glm::vec3(glm::vec4(position_, 1.f) * modelMatrix_);
+	glm::vec3 ret = glm::vec3(modelMatrix_ * glm::vec4(position_, 1.f));
 	LOG_VEC3(name_ +".world_position", ret);
 	return ret;
 }
